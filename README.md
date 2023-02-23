@@ -42,3 +42,10 @@ To run this project on macOS:
 ```bash
 open OtoDecks.app
 ```
+
+## References
+* [1] Initial code was taken from the University of London's Object Oriented Programming course.
+* [2] [JUCE](https://juce.com/)
+* [3] [FRUT](https://github.com/McMartin/FRUT)
+* [4] [CMake](https://cmake.org/)
+ 
