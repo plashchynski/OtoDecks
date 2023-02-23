@@ -33,3 +33,6 @@
 
 # macOS stuff
 .DS_Store
+
+# Do not include build directory
+build/
