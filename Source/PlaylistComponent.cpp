@@ -11,12 +11,23 @@
 #include <JuceHeader.h>
 #include "PlaylistComponent.h"
 
+
 //==============================================================================
 PlaylistComponent::PlaylistComponent()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
 
+    trackTitles.push_back("Track 1");
+    trackTitles.push_back("Track 2");
+    trackTitles.push_back("Track 3");
+    trackTitles.push_back("Track 4");
+
+    tableComponent.getHeader().addColumn("Track title", 1, 400);
+    tableComponent.getHeader().addColumn("", 2, 200);
+    tableComponent.setModel(this);
+
+    addAndMakeVisible(tableComponent);
 }
 
 PlaylistComponent::~PlaylistComponent()
@@ -47,5 +58,54 @@ void PlaylistComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    tableComponent.setBounds(getLocalBounds());
+}
 
+int PlaylistComponent::getNumRows()
+{
+    return trackTitles.size();
+}
+
+void PlaylistComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
+                            int width, int height, bool rowIsSelected)
+{
+    if (rowIsSelected)
+        g.fillAll(juce::Colours::lightblue);
+    else if (rowNumber % 2)
+        g.fillAll(juce::Colours::lightgrey);
+    else
+        g.fillAll(juce::Colours::darkgrey);
+}
+
+void PlaylistComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
+                    int width, int height, bool rowIsSelected)
+{
+    g.setColour(juce::Colours::black);
+    g.setFont(14.0f);
+
+    g.drawText(trackTitles[rowNumber], 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+}
+
+juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int columnId,
+                                            bool isRowSelected,
+                                            juce::Component* existingComponentToUpdate)
+{
+    if (columnId == 2)
+    {
+        if (existingComponentToUpdate == nullptr)
+        {
+            juce::TextButton* button = new juce::TextButton("Play");
+            juce::String id{std::to_string(rowNumber)};
+            button->setComponentID(id);
+            button->addListener(this);
+            existingComponentToUpdate = button;
+        }
+    }
+    return existingComponentToUpdate;
+}
+
+void PlaylistComponent::buttonClicked (juce::Button* button)
+{
+    int id = std::stoi(button->getComponentID().toStdString());
+    std::cout << "Button clicked " << trackTitles[id] << std::endl;
 }
