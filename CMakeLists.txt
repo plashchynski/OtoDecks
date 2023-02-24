@@ -20,12 +20,14 @@ set(JUCE_MODULES_GLOBAL_PATH "/Users/dima/dev/JUCE/modules")
 jucer_project_begin(
   JUCER_FORMAT_VERSION "1"
   PROJECT_FILE "${OtoDecks_jucer_FILE}"
-  PROJECT_ID "sQfdmN"
+  PROJECT_ID "b6OAWy"
 )
 
 jucer_project_settings(
   PROJECT_NAME "OtoDecks"
   PROJECT_VERSION "1.0.0"
+  USE_GLOBAL_APPCONFIG_HEADER OFF
+  ADD_USING_NAMESPACE_JUCE_TO_JUCE_HEADER OFF
   DISPLAY_THE_JUCE_SPLASH_SCREEN ON # Required for closed source applications without an Indie or Pro JUCE license
   PROJECT_TYPE "GUI Application"
   BUNDLE_IDENTIFIER "com.yourcompany.OtoDecks"
@@ -35,15 +37,17 @@ jucer_project_settings(
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  x         .         .         "Source/PlaylistComponent.cpp"
+  .         .         .         "Source/PlaylistComponent.h"
   x         .         .         "Source/WaveformDisplay.cpp"
   .         .         .         "Source/WaveformDisplay.h"
   x         .         .         "Source/DeckGUI.cpp"
   .         .         .         "Source/DeckGUI.h"
   x         .         .         "Source/DJAudioPlayer.cpp"
   .         .         .         "Source/DJAudioPlayer.h"
+  x         .         .         "Source/Main.cpp"
   .         .         .         "Source/MainComponent.h"
   x         .         .         "Source/MainComponent.cpp"
-  x         .         .         "Source/Main.cpp"
 )
 
 jucer_project_module(
@@ -72,7 +76,7 @@ jucer_project_module(
   PATH "${JUCE_MODULES_GLOBAL_PATH}"
   # JUCE_USE_FLAC
   # JUCE_USE_OGGVORBIS
-  JUCE_USE_MP3AUDIOFORMAT ON
+  # JUCE_USE_MP3AUDIOFORMAT
   # JUCE_USE_LAME_AUDIO_FORMAT
   # JUCE_USE_WINDOWS_MEDIA_FORMAT
 )
@@ -113,23 +117,8 @@ jucer_project_module(
 )
 
 jucer_project_module(
-  juce_cryptography
-  PATH "${JUCE_MODULES_GLOBAL_PATH}"
-)
-
-jucer_project_module(
   juce_data_structures
   PATH "${JUCE_MODULES_GLOBAL_PATH}"
-)
-
-jucer_project_module(
-  juce_dsp
-  PATH "${JUCE_MODULES_GLOBAL_PATH}"
-  # JUCE_ASSERTION_FIRFILTER
-  # JUCE_DSP_USE_INTEL_MKL
-  # JUCE_DSP_USE_SHARED_FFTW
-  # JUCE_DSP_USE_STATIC_FFTW
-  # JUCE_DSP_ENABLE_SNAP_TO_ZERO
 )
 
 jucer_project_module(
@@ -166,11 +155,6 @@ jucer_project_module(
   # JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 )
 
-jucer_project_module(
-  juce_opengl
-  PATH "${JUCE_MODULES_GLOBAL_PATH}"
-)
-
 jucer_export_target(
   "Xcode (macOS)"
 )
@@ -179,44 +163,14 @@ jucer_export_target_configuration(
   "Xcode (macOS)"
   NAME "Debug"
   DEBUG_MODE ON
+  BINARY_NAME "OtoDecks"
 )
 
 jucer_export_target_configuration(
   "Xcode (macOS)"
   NAME "Release"
   DEBUG_MODE OFF
-)
-
-jucer_export_target(
-  "Visual Studio 2019"
-)
-
-jucer_export_target_configuration(
-  "Visual Studio 2019"
-  NAME "Debug"
-  DEBUG_MODE ON
-)
-
-jucer_export_target_configuration(
-  "Visual Studio 2019"
-  NAME "Release"
-  DEBUG_MODE OFF
-)
-
-jucer_export_target(
-  "Linux Makefile"
-)
-
-jucer_export_target_configuration(
-  "Linux Makefile"
-  NAME "Debug"
-  DEBUG_MODE ON
-)
-
-jucer_export_target_configuration(
-  "Linux Makefile"
-  NAME "Release"
-  DEBUG_MODE OFF
+  BINARY_NAME "OtoDecks"
 )
 
 jucer_project_end()

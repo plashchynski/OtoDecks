@@ -2,41 +2,41 @@
   ==============================================================================
 
     WaveformDisplay.h
-    Created: 14 Mar 2020 3:50:16pm
-    Author:  matthew
+    Created: 24 Feb 2023 1:30:06pm
+    Author:  Dzmitry Plashchynski
 
   ==============================================================================
 */
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
 //==============================================================================
 /*
 */
-class WaveformDisplay    : public Component, 
-                           public ChangeListener
+class WaveformDisplay  :  public juce::Component,
+                          public juce::ChangeListener
 {
 public:
-    WaveformDisplay( AudioFormatManager & 	formatManagerToUse,
-                    AudioThumbnailCache & 	cacheToUse );
-    ~WaveformDisplay();
+    WaveformDisplay(juce::AudioFormatManager & 	formatManagerToUse,
+                    juce::AudioThumbnailCache & 	cacheToUse);
+    ~WaveformDisplay() override;
 
-    void paint (Graphics&) override;
+    void paint (juce::Graphics&) override;
     void resized() override;
 
-    void changeListenerCallback (ChangeBroadcaster *source) override;
+    void changeListenerCallback (juce::ChangeBroadcaster *source) override;
 
-    void loadURL(URL audioURL);
+    void loadURL(juce::URL audioURL);
 
     /** set the relative position of the playhead*/
     void setPositionRelative(double pos);
 
 private:
-    AudioThumbnail audioThumb;
-    bool fileLoaded; 
+    juce::AudioThumbnail audioThumb;
+    bool fileLoaded;
     double position;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveformDisplay)
 };

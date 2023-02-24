@@ -2,32 +2,31 @@
   ==============================================================================
 
     DJAudioPlayer.h
-    Created: 13 Mar 2020 4:22:22pm
-    Author:  matthew
+    Created: 24 Feb 2023 1:28:59pm
+    Author:  Dzmitry Plashchynski
 
   ==============================================================================
 */
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 
-class DJAudioPlayer : public AudioSource {
-  public:
-
-    DJAudioPlayer(AudioFormatManager& _formatManager);
+class DJAudioPlayer : public juce::AudioSource {
+public:
+    DJAudioPlayer(juce::AudioFormatManager& _formatManager);
     ~DJAudioPlayer();
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
 
-    void loadURL(URL audioURL);
+    void loadURL(juce::URL audioURL);
     void setGain(double gain);
     void setSpeed(double ratio);
     void setPosition(double posInSecs);
     void setPositionRelative(double pos);
-    
+
 
     void start();
     void stop();
@@ -36,13 +35,8 @@ class DJAudioPlayer : public AudioSource {
     double getPositionRelative();
 
 private:
-    AudioFormatManager& formatManager;
-    std::unique_ptr<AudioFormatReaderSource> readerSource;
-    AudioTransportSource transportSource; 
-    ResamplingAudioSource resampleSource{&transportSource, false, 2};
-
+    juce::AudioFormatManager& formatManager;
+    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+    juce::AudioTransportSource transportSource;
+    juce::ResamplingAudioSource resampleSource{&transportSource, false, 2};
 };
-
-
-
-

@@ -17,6 +17,8 @@ To compile the project on macOS, install [FRUT](https://github.com/McMartin/FRUT
 ../FRUT/prefix/FRUT/bin/Jucer2CMake reprojucer OtoDecks.jucer ../FRUT/prefix/FRUT/cmake/Reprojucer.cmake
 ```
 
+You should run the FRUT command each time after you added a new file into the project.
+
 Then you can build the project with CMake:
 
 ```bash

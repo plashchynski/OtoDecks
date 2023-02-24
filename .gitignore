@@ -36,3 +36,6 @@
 
 # Do not include build directory
 build/
+
+# Do not include Juce builds
+Builds/

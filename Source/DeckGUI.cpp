@@ -2,27 +2,27 @@
   ==============================================================================
 
     DeckGUI.cpp
-    Created: 13 Mar 2020 6:44:48pm
-    Author:  matthew
+    Created: 24 Feb 2023 1:29:23pm
+    Author:  Dzmitry Plashchynski
 
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "DeckGUI.h"
 
 //==============================================================================
-DeckGUI::DeckGUI(DJAudioPlayer* _player, 
-                AudioFormatManager & 	formatManagerToUse,
-                AudioThumbnailCache & 	cacheToUse
-           ) : player(_player), 
+DeckGUI::DeckGUI(DJAudioPlayer* _player,
+                juce::AudioFormatManager & 	formatManagerToUse,
+                juce::AudioThumbnailCache & 	cacheToUse
+           ) : player(_player),
                waveformDisplay(formatManagerToUse, cacheToUse)
 {
 
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(loadButton);
-       
+
     addAndMakeVisible(volSlider);
     addAndMakeVisible(speedSlider);
     addAndMakeVisible(posSlider);
@@ -44,8 +44,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     posSlider.setRange(0.0, 1.0);
 
     startTimer(500);
-
-
 }
 
 DeckGUI::~DeckGUI()
@@ -53,7 +51,7 @@ DeckGUI::~DeckGUI()
     stopTimer();
 }
 
-void DeckGUI::paint (Graphics& g)
+void DeckGUI::paint (juce::Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -62,31 +60,30 @@ void DeckGUI::paint (Graphics& g)
        drawing code..
     */
 
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
+    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
-    g.setColour (Colours::grey);
+    g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 
-    g.setColour (Colours::white);
+    g.setColour (juce::Colours::white);
     g.setFont (14.0f);
     g.drawText ("DeckGUI", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
+                juce::Justification::centred, true);   // draw some placeholder text
 }
 
 void DeckGUI::resized()
 {
-    double rowH = getHeight() / 8; 
+    double rowH = getHeight() / 8;
     playButton.setBounds(0, 0, getWidth(), rowH);
-    stopButton.setBounds(0, rowH, getWidth(), rowH);  
+    stopButton.setBounds(0, rowH, getWidth(), rowH);
     volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
     speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
     posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
     waveformDisplay.setBounds(0, rowH * 5, getWidth(), rowH * 2);
     loadButton.setBounds(0, rowH * 7, getWidth(), rowH);
-
 }
 
-void DeckGUI::buttonClicked(Button* button)
+void DeckGUI::buttonClicked(juce::Button* button)
 {
     if (button == &playButton)
     {
@@ -101,30 +98,18 @@ void DeckGUI::buttonClicked(Button* button)
     }
        if (button == &loadButton)
     {
-        auto fileChooserFlags = 
-        FileBrowserComponent::canSelectFiles;
-        fChooser.launchAsync(fileChooserFlags, [this](const FileChooser& chooser)
+        auto fileChooserFlags =
+        juce::FileBrowserComponent::canSelectFiles;
+        fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
         {
-            player->loadURL(URL{chooser.getResult()});
+            player->loadURL(juce::URL{chooser.getResult()});
             // and now the waveformDisplay as well
-            waveformDisplay.loadURL(URL{chooser.getResult()}); 
+            waveformDisplay.loadURL(juce::URL{chooser.getResult()});
         });
     }
-    // if (button == &loadButton)
-    // {
-    //     FileChooser chooser{"Select a file..."};
-    //     if (chooser.browseForFileToOpen())
-    //     {
-    //         player->loadURL(URL{chooser.getResult()});
-    //         waveformDisplay.loadURL(URL{chooser.getResult()});
-            
-    //     }
-
-
-    // }
 }
 
-void DeckGUI::sliderValueChanged (Slider *slider)
+void DeckGUI::sliderValueChanged (juce::Slider *slider)
 {
     if (slider == &volSlider)
     {
@@ -135,27 +120,26 @@ void DeckGUI::sliderValueChanged (Slider *slider)
     {
         player->setSpeed(slider->getValue());
     }
-    
+
     if (slider == &posSlider)
     {
         player->setPositionRelative(slider->getValue());
     }
-    
 }
 
-bool DeckGUI::isInterestedInFileDrag (const StringArray &files)
+// TODO: allow only appropriate files
+bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
 {
-  std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
-  return true; 
+    std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
+    return true;
 }
 
-void DeckGUI::filesDropped (const StringArray &files, int x, int y)
+void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
 {
-  std::cout << "DeckGUI::filesDropped" << std::endl;
-  if (files.size() == 1)
-  {
-    player->loadURL(URL{File{files[0]}});
-  }
+    if (files.size() == 1)
+    {
+        player->loadURL(juce::URL{juce::File{files[0]}});
+    }
 }
 
 void DeckGUI::timerCallback()
@@ -164,7 +148,3 @@ void DeckGUI::timerCallback()
     waveformDisplay.setPositionRelative(
             player->getPositionRelative());
 }
-
-
-    
-
