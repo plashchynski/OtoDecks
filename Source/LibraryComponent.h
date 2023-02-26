@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    PlaylistComponent.h
-    Created: 24 Feb 2023 1:30:33pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -17,13 +7,13 @@
 //==============================================================================
 /*
 */
-class PlaylistComponent  :  public juce::Component,
+class LibraryComponent  :  public juce::Component,
                             public juce::TableListBoxModel,
                             public juce::Button::Listener
 {
 public:
-    PlaylistComponent();
-    ~PlaylistComponent() override;
+    LibraryComponent();
+    ~LibraryComponent() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
@@ -43,5 +33,5 @@ private:
     juce::TableListBox tableComponent;
     std::vector<std::string> trackTitles;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlaylistComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LibraryComponent)
 };

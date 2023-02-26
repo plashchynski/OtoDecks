@@ -1,19 +1,9 @@
-/*
-  ==============================================================================
-
-    PlaylistComponent.cpp
-    Created: 24 Feb 2023 1:30:33pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
-#include "PlaylistComponent.h"
+#include "LibraryComponent.h"
 
 
 //==============================================================================
-PlaylistComponent::PlaylistComponent()
+LibraryComponent::LibraryComponent()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -30,11 +20,11 @@ PlaylistComponent::PlaylistComponent()
     addAndMakeVisible(tableComponent);
 }
 
-PlaylistComponent::~PlaylistComponent()
+LibraryComponent::~LibraryComponent()
 {
 }
 
-void PlaylistComponent::paint (juce::Graphics& g)
+void LibraryComponent::paint (juce::Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -50,23 +40,23 @@ void PlaylistComponent::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (14.0f);
-    g.drawText ("PlaylistComponent", getLocalBounds(),
+    g.drawText ("LibraryComponent", getLocalBounds(),
                 juce::Justification::centred, true);   // draw some placeholder text
 }
 
-void PlaylistComponent::resized()
+void LibraryComponent::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
     tableComponent.setBounds(getLocalBounds());
 }
 
-int PlaylistComponent::getNumRows()
+int LibraryComponent::getNumRows()
 {
     return trackTitles.size();
 }
 
-void PlaylistComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
+void LibraryComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
                             int width, int height, bool rowIsSelected)
 {
     if (rowIsSelected)
@@ -77,7 +67,7 @@ void PlaylistComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
         g.fillAll(juce::Colours::darkgrey);
 }
 
-void PlaylistComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
+void LibraryComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
                     int width, int height, bool rowIsSelected)
 {
     g.setColour(juce::Colours::black);
@@ -86,7 +76,7 @@ void PlaylistComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId
     g.drawText(trackTitles[rowNumber], 2, 0, width - 4, height, juce::Justification::centredLeft, true);
 }
 
-juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int columnId,
+juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int columnId,
                                             bool isRowSelected,
                                             juce::Component* existingComponentToUpdate)
 {
@@ -104,7 +94,7 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber, int c
     return existingComponentToUpdate;
 }
 
-void PlaylistComponent::buttonClicked (juce::Button* button)
+void LibraryComponent::buttonClicked (juce::Button* button)
 {
     int id = std::stoi(button->getComponentID().toStdString());
     std::cout << "Button clicked " << trackTitles[id] << std::endl;

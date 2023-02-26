@@ -3,7 +3,7 @@
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
-#include "PlaylistComponent.h"
+#include "LibraryComponent.h"
 
 //==============================================================================
 /*
@@ -41,7 +41,7 @@ private:
 
     juce::MixerAudioSource mixerSource;
 
-    PlaylistComponent playlistComponent;
+    LibraryComponent libraryComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
