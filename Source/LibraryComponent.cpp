@@ -3,19 +3,18 @@
 
 #include <JuceHeader.h>
 #include "LibraryComponent.h"
+#include "LibraryItem.h"
+#include "Formatter.h"
 
-LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) : formatManager(_formatManager)
+LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
+                        formatManager(_formatManager)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-
-    trackTitles.push_back("Track 1");
-    trackTitles.push_back("Track 2");
-    trackTitles.push_back("Track 3");
-    trackTitles.push_back("Track 4");
-
-    tableComponent.getHeader().addColumn("Track title", 1, 400);
-    tableComponent.getHeader().addColumn("", 2, 200);
+    tableComponent.getHeader().addColumn("Track", 1, 400);
+    tableComponent.getHeader().addColumn("Artist", 2, 200);
+    tableComponent.getHeader().addColumn("Duration", 3, 100);
+    tableComponent.getHeader().addColumn("", 4, 200);
     tableComponent.setModel(this);
 
     addAndMakeVisible(tableComponent);
@@ -54,7 +53,7 @@ void LibraryComponent::resized()
 
 int LibraryComponent::getNumRows()
 {
-    return trackTitles.size();
+    return items.size();
 }
 
 void LibraryComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
@@ -74,14 +73,26 @@ void LibraryComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
     g.setColour(juce::Colours::black);
     g.setFont(14.0f);
 
-    g.drawText(trackTitles[rowNumber], 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+    LibraryItem item = items[rowNumber];
+    
+    switch(columnId) {
+        case 1:
+            g.drawText(item.title, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+        break;
+        case 2:
+            g.drawText(item.artist, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+        break;
+        case 3:
+            g.drawText(Formatter::formatTime(item.duration), 2, 0, width - 4, height, juce::Justification::centredLeft, true);
+        break;
+    }
 }
 
 juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int columnId,
                                             bool isRowSelected,
                                             juce::Component* existingComponentToUpdate)
 {
-    if (columnId == 2)
+    if (columnId == 4)
     {
         if (existingComponentToUpdate == nullptr)
         {
@@ -98,9 +109,8 @@ juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int co
 void LibraryComponent::buttonClicked (juce::Button* button)
 {
     int id = std::stoi(button->getComponentID().toStdString());
-    std::cout << "Button clicked " << trackTitles[id] << std::endl;
+    std::cout << "Button clicked " << items[id].title << std::endl;
 }
-
 
 // virtual methods from FileDragAndDropTarget
 // Check if the file is supported using AudioFormatManager to find the format by the file extension
@@ -127,6 +137,42 @@ void LibraryComponent::filesDropped (const juce::StringArray& files, int x, int 
     std::cout << "LibraryComponent::filesDropped" << std::endl;
     for (auto file : files)
     {
-        std::cout << file.toStdString() << std::endl;
+        addFile(file.toStdString());
     }
+}
+
+/**
+ * Add a file to the library
+*/
+void LibraryComponent::addFile(const std::string& filePath)
+{
+    std::cout << "Adding " << filePath << " to the library." << filePath << std::endl;
+
+    juce::File audioFile(filePath);
+    LibraryItem item;
+
+    // Set default values
+    item.file_path = filePath;
+    item.title = audioFile.getFileNameWithoutExtension();
+    item.artist = "Unknown";
+    item.duration = 0;
+
+    // Trying to get the metadata from the file
+    std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor(audioFile));
+    if (reader)
+    {
+        item.duration = reader->lengthInSamples / reader->sampleRate;
+
+        auto metadata = reader->metadataValues;
+        if (metadata.size() > 0)
+        {
+            item.title = metadata["title"];
+            item.artist = metadata["author"];
+        }
+    }
+
+    items.push_back(item);
+
+    // Update the table
+    tableComponent.updateContent();
 }

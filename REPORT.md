@@ -38,9 +38,13 @@ allows the user to control deck playback in some way that is more advanced than 
 Implementation of a music library component which allows the user to manage their
 music library.
 
-#### R3A: Component allows the user to add files to their library ❌
+#### R3A: Component allows the user to add files to their library ✅
 
-#### R3B: Component parses and displays meta data such as filename and song length ❌
+You can drag and drop files into the library. Only the valid audio files will be added to the library. This is done by checking the file extension in the `LibraryComponent` class in the `isInterestedInFileDrag` method. The `AudioFormatManager::findFormatForFileExtension` method is used to check if the file extension is supported by the global `AudioFormatManager` instance.
+
+#### R3B: Component parses and displays meta data such as filename and song length ✅
+
+When a file is added, the `LibraryComponent` class uses the `AudioFormatManager::createReaderFor` method to create an `AudioFormatReader` instance for the selected file. The `AudioFormatReader` instance is used to get the meta-information. The `LibraryComponent` uses a `LibraryItem` struct to store and display all the meta-information about the audio files.
 
 #### R3C: Component allows the user to search for files ❌
 

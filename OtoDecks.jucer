@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="geIw2X" name="OtoDecks">
     <GROUP id="{6FB17DBA-1BCF-64BB-8BA5-D8741FB27D13}" name="Source">
+      <FILE id="CKHsAn" name="Formatter.cpp" compile="1" resource="0" file="Source/Formatter.cpp"/>
+      <FILE id="xsM6Vx" name="Formatter.h" compile="0" resource="0" file="Source/Formatter.h"/>
       <FILE id="HRP81V" name="LibraryComponent.cpp" compile="1" resource="0"
             file="Source/LibraryComponent.cpp"/>
       <FILE id="kodFid" name="LibraryComponent.h" compile="0" resource="0"
@@ -22,6 +24,7 @@
       <FILE id="i4lquP" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
     </GROUP>
+    <FILE id="QqhGjC" name="LibraryItem.h" compile="0" resource="0" file="Source/LibraryItem.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>

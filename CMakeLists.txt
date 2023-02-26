@@ -37,6 +37,8 @@ jucer_project_settings(
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  x         .         .         "Source/Formatter.cpp"
+  .         .         .         "Source/Formatter.h"
   x         .         .         "Source/LibraryComponent.cpp"
   .         .         .         "Source/LibraryComponent.h"
   x         .         .         "Source/WaveformDisplay.cpp"
@@ -48,6 +50,12 @@ jucer_project_files("OtoDecks/Source"
   x         .         .         "Source/Main.cpp"
   .         .         .         "Source/MainComponent.h"
   x         .         .         "Source/MainComponent.cpp"
+)
+
+jucer_project_files("OtoDecks"
+# Compile   Xcode     Binary    File
+#           Resource  Resource
+  .         .         .         "Source/LibraryItem.h"
 )
 
 jucer_project_module(

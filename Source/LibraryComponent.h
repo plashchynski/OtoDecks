@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "LibraryItem.h"
+
 class LibraryComponent  :   public juce::Component,
                             public juce::TableListBoxModel,
                             public juce::Button::Listener,
@@ -31,12 +33,17 @@ public:
     bool isInterestedInFileDrag (const juce::StringArray& files) override;
     void filesDropped (const juce::StringArray& files, int x, int y) override;
 
+    /**
+     * Add a file to the library
+     * @param filePath path to the file
+    */
+    void addFile(const std::string& filePath);
 
 private:
     juce::AudioFormatManager& formatManager;
 
     juce::TableListBox tableComponent;
-    std::vector<std::string> trackTitles;
+    std::vector<LibraryItem> items;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LibraryComponent)
 };
