@@ -164,6 +164,7 @@ jucer_export_target_configuration(
   NAME "Debug"
   DEBUG_MODE ON
   BINARY_NAME "OtoDecks"
+  MACOS_DEPLOYMENT_TARGET "10.15"
 )
 
 jucer_export_target_configuration(
@@ -171,6 +172,7 @@ jucer_export_target_configuration(
   NAME "Release"
   DEBUG_MODE OFF
   BINARY_NAME "OtoDecks"
+  MACOS_DEPLOYMENT_TARGET "10.15"
 )
 
 jucer_project_end()

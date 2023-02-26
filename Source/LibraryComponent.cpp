@@ -1,9 +1,10 @@
+#include <iostream>
+#include <filesystem>
+
 #include <JuceHeader.h>
 #include "LibraryComponent.h"
 
-
-//==============================================================================
-LibraryComponent::LibraryComponent()
+LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) : formatManager(_formatManager)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -98,4 +99,34 @@ void LibraryComponent::buttonClicked (juce::Button* button)
 {
     int id = std::stoi(button->getComponentID().toStdString());
     std::cout << "Button clicked " << trackTitles[id] << std::endl;
+}
+
+
+// virtual methods from FileDragAndDropTarget
+// Check if the file is supported using AudioFormatManager to find the format by the file extension
+bool LibraryComponent::isInterestedInFileDrag (const juce::StringArray& files)
+{
+    std::cout << "LibraryComponent::isInterestedInFileDrag" << std::endl;
+
+    for (auto file : files)
+    {
+        std::string extension = std::filesystem::path(file.toStdString()).extension();
+        juce::AudioFormat* format = formatManager.findFormatForFileExtension(extension);
+        if (format == nullptr)
+        {
+            std::cout << extension << " file extension is not suported" << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void LibraryComponent::filesDropped (const juce::StringArray& files, int x, int y)
+{
+    std::cout << "LibraryComponent::filesDropped" << std::endl;
+    for (auto file : files)
+    {
+        std::cout << file.toStdString() << std::endl;
+    }
 }

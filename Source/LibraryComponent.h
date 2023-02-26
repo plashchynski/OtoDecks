@@ -4,15 +4,13 @@
 #include <vector>
 #include <string>
 
-//==============================================================================
-/*
-*/
-class LibraryComponent  :  public juce::Component,
+class LibraryComponent  :   public juce::Component,
                             public juce::TableListBoxModel,
-                            public juce::Button::Listener
+                            public juce::Button::Listener,
+                            public juce::FileDragAndDropTarget
 {
 public:
-    LibraryComponent();
+    LibraryComponent(juce::AudioFormatManager& formatManager);
     ~LibraryComponent() override;
 
     void paint (juce::Graphics&) override;
@@ -29,7 +27,14 @@ public:
                                             juce::Component* existingComponentToUpdate) override;
     void buttonClicked (juce::Button* button) override;
 
+    // virtual methods from FileDragAndDropTarget
+    bool isInterestedInFileDrag (const juce::StringArray& files) override;
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
+
+
 private:
+    juce::AudioFormatManager& formatManager;
+
     juce::TableListBox tableComponent;
     std::vector<std::string> trackTitles;
 

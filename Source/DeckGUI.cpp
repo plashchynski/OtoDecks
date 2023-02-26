@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    DeckGUI.cpp
-    Created: 24 Feb 2023 1:29:23pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 #include "DeckGUI.h"
 
@@ -119,21 +109,6 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
     if (slider == &posSlider)
     {
         player->setPositionRelative(slider->getValue());
-    }
-}
-
-// TODO: allow only appropriate files
-bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
-{
-    std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
-    return true;
-}
-
-void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
-{
-    if (files.size() == 1)
-    {
-        player->loadURL(juce::URL{juce::File{files[0]}});
     }
 }
 
