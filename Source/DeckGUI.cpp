@@ -75,13 +75,13 @@ void DeckGUI::buttonClicked(juce::Button* button)
         std::cout << "Play button was clicked " << std::endl;
         player->start();
     }
-     if (button == &stopButton)
+    if (button == &stopButton)
     {
         std::cout << "Stop button was clicked " << std::endl;
         player->stop();
 
     }
-       if (button == &loadButton)
+    if (button == &loadButton)
     {
         auto fileChooserFlags =
         juce::FileBrowserComponent::canSelectFiles;
@@ -114,6 +114,5 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
 
 void DeckGUI::timerCallback()
 {
-    waveformDisplay.setPositionRelative(
-            player->getPositionRelative());
+    waveformDisplay.setPositionRelative(player->getPositionRelative());
 }

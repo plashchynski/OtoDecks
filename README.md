@@ -45,6 +45,12 @@ To run this project on macOS:
 open OtoDecks.app
 ```
 
+## Create an archive of the project
+
+```bash
+git archive --format=zip  --output=../OtoDecks_v1.zip main .
+```
+
 ## References
 * [1] Initial code was taken from the University of London's Object Oriented Programming course.
 * [2] [JUCE](https://juce.com/)
