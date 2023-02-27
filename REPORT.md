@@ -46,7 +46,11 @@ You can drag and drop files into the library. Only the valid audio files will be
 
 When a file is added, the `LibraryComponent` class uses the `AudioFormatManager::createReaderFor` method to create an `AudioFormatReader` instance for the selected file. The `AudioFormatReader` instance is used to get the meta-information. The `LibraryComponent` uses a `LibraryItem` struct to store and display all the meta-information about the audio files.
 
-#### R3C: Component allows the user to search for files ❌
+#### R3C: Component allows the user to search for files ✅
+
+The `LibraryComponent` class has a data member `searchBox` of a `TextEditor` class which is used to search for items in the library. We have two vectors of `LibraryItem`s in the `LibraryComponent` class. `allItems` contains all the items in the library and `itemsToDisplay` contains the items that should be displayed in the UI based on the search query or other factors.
+
+If a user types in the search box, the `LibraryComponent` class receives a `TextEditor::textEditorTextChanged` callback. Inside the callback, we call `updateDisplayedItems` method which calls `searchLibrary` to find matched items in the `allItems` vector and then update the `itemsToDisplay` vector.
 
 #### R3D: Component allows the user to load files from the library into a deck ❌
 

@@ -9,15 +9,19 @@
 LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
                         formatManager(_formatManager)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
     tableComponent.getHeader().addColumn("Track", 1, 400);
     tableComponent.getHeader().addColumn("Artist", 2, 200);
     tableComponent.getHeader().addColumn("Duration", 3, 100);
     tableComponent.getHeader().addColumn("", 4, 200);
     tableComponent.setModel(this);
 
+    addAndMakeVisible(searchBox);
     addAndMakeVisible(tableComponent);
+
+    searchBox.addListener(this);
+    searchBox.setTextToShowWhenEmpty("Search for a track or an artist...", juce::Colours::grey);
+
+    updateDisplayedItems();
 }
 
 LibraryComponent::~LibraryComponent()
@@ -46,14 +50,13 @@ void LibraryComponent::paint (juce::Graphics& g)
 
 void LibraryComponent::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-    tableComponent.setBounds(getLocalBounds());
+    searchBox.setBounds(0, 0, getWidth(), 30);
+    tableComponent.setBounds(0, 30, getWidth(), getHeight() - 30);
 }
 
 int LibraryComponent::getNumRows()
 {
-    return items.size();
+    return itemsToDisplay.size();
 }
 
 void LibraryComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
@@ -73,7 +76,7 @@ void LibraryComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
     g.setColour(juce::Colours::black);
     g.setFont(14.0f);
 
-    LibraryItem item = items[rowNumber];
+    LibraryItem item = itemsToDisplay[rowNumber];
     
     switch(columnId) {
         case 1:
@@ -109,7 +112,7 @@ juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int co
 void LibraryComponent::buttonClicked (juce::Button* button)
 {
     int id = std::stoi(button->getComponentID().toStdString());
-    std::cout << "Button clicked " << items[id].title << std::endl;
+    std::cout << "Button clicked " << itemsToDisplay[id].title << std::endl;
 }
 
 // virtual methods from FileDragAndDropTarget
@@ -171,8 +174,50 @@ void LibraryComponent::addFile(const std::string& filePath)
         }
     }
 
-    items.push_back(item);
+    allItems.push_back(item);
+
+    // Update the itemsToDisplay vector based on the search query and with a new item
+    updateDisplayedItems();
 
     // Update the table
     tableComponent.updateContent();
+}
+
+// virtual methods from TextEditor::Listener
+void LibraryComponent::textEditorTextChanged(juce::TextEditor& editor)
+{
+    if (&editor == &searchBox)
+    {
+        // Update the table content based on the search query
+        updateDisplayedItems();
+        tableComponent.updateContent();
+    }
+}
+
+std::vector<LibraryItem> LibraryComponent::searchLibrary(const juce::String & query)
+{
+    std::vector<LibraryItem> itemsToDisplay;
+
+    for (auto item : allItems)
+    {
+        if (item.title.containsIgnoreCase(query) || item.artist.containsIgnoreCase(query))
+        {
+            itemsToDisplay.push_back(item);
+        }
+    }
+
+    return itemsToDisplay;
+}
+
+/**
+ * Update the itemsToDisplay vector based on the search query
+ * Should be called every time after the search query is changed or a new item is added to the library
+*/
+void LibraryComponent::updateDisplayedItems()
+{
+    itemsToDisplay = allItems;
+    if (searchBox.getText().isNotEmpty())
+    {
+        itemsToDisplay = searchLibrary(searchBox.getText());
+    }
 }
