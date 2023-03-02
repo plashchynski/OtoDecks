@@ -153,7 +153,7 @@ void LibraryComponent::addFile(const std::string& filePath)
     LibraryItem item;
 
     // Set default values
-    item.file_path = filePath;
+    item.filePath = filePath;
     item.title = audioFile.getFileNameWithoutExtension();
     item.artist = "Unknown";
     item.duration = 0;
@@ -223,7 +223,7 @@ void LibraryComponent::updateDisplayedItems()
 juce::var LibraryComponent::getDragSourceDescription(const juce::SparseSet<int>& currentlySelectedRows)
 {
     juce::ValueTree draggedItemInfo{"libraryItem"};
-    draggedItemInfo.setProperty("filePath", itemsToDisplay[currentlySelectedRows[0]].file_path, nullptr);
+    draggedItemInfo.setProperty("filePath", itemsToDisplay[currentlySelectedRows[0]].filePath, nullptr);
 
     return draggedItemInfo.toXmlString();
 }

@@ -14,7 +14,7 @@
 
 struct LibraryItem
 {
-    juce::String file_path;
+    juce::String filePath;
     juce::String title;
     juce::String artist;
 
