@@ -12,7 +12,7 @@ The application should contain all the basic functionality shown in class:
 
 #### R1A: can load audio files into audio players ✅
 
-#### R1B: can play two or more tracks ✅ 
+#### R1B: can play two or more tracks ✅
 
 
 #### R1C: can mix the tracks by varying each of their volumes ✅
@@ -52,7 +52,9 @@ The `LibraryComponent` class has a data member `searchBox` of a `TextEditor` cla
 
 If a user types in the search box, the `LibraryComponent` class receives a `TextEditor::textEditorTextChanged` callback. Inside the callback, we call `updateDisplayedItems` method which calls `searchLibrary` to find matched items in the `allItems` vector and then update the `itemsToDisplay` vector.
 
-#### R3D: Component allows the user to load files from the library into a deck ❌
+#### R3D: Component allows the user to load files from the library into a deck ✅
+
+You can drag and drop files from the library into the deck. This is done by allowing a library item to be dragged by overriding the `juce::TableListBoxModel::getDragSourceDescription` method in the `LibraryComponent` class. An information about the dragged item is stored in a XML-serialized `juce::ValueTree` object. The dragged object received by overriding the `juce::TextDragAndDropTarget::itemDropped` method in the `DeckGUI` class. The `DeckGUI` unserializes the `juce::ValueTree` object from a XML string received by `itemDropped` as an argument, get the item's file path, finally loads the file into the deck.
 
 #### R3E: The music library persists so that it is restored when the user exits then restarts the application ❌
 
