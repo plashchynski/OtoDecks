@@ -33,7 +33,7 @@ allows the user to control deck playback in some way that is more advanced than 
 
 
 
-### R3: Music library component ❌
+### R3: Music library component ✅
 
 Implementation of a music library component which allows the user to manage their
 music library.
@@ -56,8 +56,9 @@ If a user types in the search box, the `LibraryComponent` class receives a `Text
 
 You can drag and drop files from the library into the deck. This is done by allowing a library item to be dragged by overriding the `juce::TableListBoxModel::getDragSourceDescription` method in the `LibraryComponent` class. An information about the dragged item is stored in a XML-serialized `juce::ValueTree` object. The dragged object received by overriding the `juce::TextDragAndDropTarget::itemDropped` method in the `DeckGUI` class. The `DeckGUI` unserializes the `juce::ValueTree` object from a XML string received by `itemDropped` as an argument, get the item's file path, finally loads the file into the deck.
 
-#### R3E: The music library persists so that it is restored when the user exits then restarts the application ❌
+#### R3E: The music library persists so that it is restored when the user exits then restarts the application ✅
 
+This functionality is implemented in `LibraryComponent::saveLibrary` and `LibraryComponent::loadLibrary` methods. The `saveLibrary` method serializes the `allItems` vector into a `juce::ValueTree` object and then saves it to a binary file `OtoDecksLibrary.otdl` in a user's Documents directory. This is an OS-independent to save a file. The `loadLibrary` method loads the saved file and then deserializes the `juce::ValueTree` object into the `allItems` vector. The library saved each time a new file is added to the library. The library is loaded when the application starts.
 
 ### R4: Implementation of a complete custom GUI ❌
 
