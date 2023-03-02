@@ -29,6 +29,10 @@ public:
     juce::Component* refreshComponentForCell(int rowNumber, int columnId,
                                             bool isRowSelected,
                                             juce::Component* existingComponentToUpdate) override;
+    juce::var getDragSourceDescription (const juce::SparseSet<int>& currentlySelectedRows) override;
+
+
+
     void buttonClicked (juce::Button* button) override;
 
     // virtual methods from FileDragAndDropTarget

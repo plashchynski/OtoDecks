@@ -77,7 +77,7 @@ void LibraryComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
     g.setFont(14.0f);
 
     LibraryItem item = itemsToDisplay[rowNumber];
-    
+
     switch(columnId) {
         case 1:
             g.drawText(item.title, 2, 0, width - 4, height, juce::Justification::centredLeft, true);
@@ -119,8 +119,6 @@ void LibraryComponent::buttonClicked (juce::Button* button)
 // Check if the file is supported using AudioFormatManager to find the format by the file extension
 bool LibraryComponent::isInterestedInFileDrag (const juce::StringArray& files)
 {
-    std::cout << "LibraryComponent::isInterestedInFileDrag" << std::endl;
-
     for (auto file : files)
     {
         std::string extension = std::filesystem::path(file.toStdString()).extension();
@@ -220,4 +218,12 @@ void LibraryComponent::updateDisplayedItems()
     {
         itemsToDisplay = searchLibrary(searchBox.getText());
     }
+}
+
+juce::var LibraryComponent::getDragSourceDescription(const juce::SparseSet<int>& currentlySelectedRows)
+{
+    juce::ValueTree draggedItemInfo{"libraryItem"};
+    draggedItemInfo.setProperty("filePath", itemsToDisplay[currentlySelectedRows[0]].file_path, nullptr);
+
+    return draggedItemInfo.toXmlString();
 }

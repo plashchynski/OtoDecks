@@ -1,12 +1,15 @@
+#include <filesystem>
+
 #include <JuceHeader.h>
 #include "DeckGUI.h"
 
 //==============================================================================
 DeckGUI::DeckGUI(DJAudioPlayer* _player,
-                juce::AudioFormatManager & 	formatManagerToUse,
-                juce::AudioThumbnailCache & 	cacheToUse
+                juce::AudioFormatManager& _formatManager,
+                juce::AudioThumbnailCache& cacheToUse
            ) : player(_player),
-               waveformDisplay(formatManagerToUse, cacheToUse)
+               formatManager(_formatManager),
+               waveformDisplay(_formatManager, cacheToUse)
 {
 
     addAndMakeVisible(playButton);
@@ -19,7 +22,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(waveformDisplay);
 
-
     playButton.addListener(this);
     stopButton.addListener(this);
     loadButton.addListener(this);
@@ -27,7 +29,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volSlider.addListener(this);
     speedSlider.addListener(this);
     posSlider.addListener(this);
-
 
     volSlider.setRange(0.0, 1.0);
     speedSlider.setRange(0.0, 100.0);
@@ -115,4 +116,58 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
 void DeckGUI::timerCallback()
 {
     waveformDisplay.setPositionRelative(player->getPositionRelative());
+}
+
+/** implement FileDragAndDropTarget */
+bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
+{
+    for (auto file : files)
+    {
+        std::string extension = std::filesystem::path(file.toStdString()).extension();
+        juce::AudioFormat* format = formatManager.findFormatForFileExtension(extension);
+        if (format == nullptr)
+        {
+            std::cout << extension << " file extension is not suported" << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
+{
+    if (files.size() > 0)
+    {
+        juce::File file{files[0]};
+        juce::URL url{file};
+
+        player->loadURL(url);
+        waveformDisplay.loadURL(url);
+    }
+}
+
+/** implement juce::TextDragAndDropTarget */
+bool DeckGUI::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+{
+    juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
+
+    if (!draggedItemInfo.isValid())
+        return false;
+
+    if (draggedItemInfo.getType().toString() != "libraryItem")
+        return false;
+
+    return true;
+}
+
+void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
+{
+    juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
+    juce::String filePath = draggedItemInfo.getProperty("filePath");
+
+    juce::File file{filePath};
+    juce::URL url{file};
+    player->loadURL(url);
+    waveformDisplay.loadURL(url);
 }
