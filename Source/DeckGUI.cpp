@@ -151,14 +151,10 @@ void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
 bool DeckGUI::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
+    if (draggedItemInfo.isValid() && draggedItemInfo.getType().toString() == "LibraryItem")
+        return true;
 
-    if (!draggedItemInfo.isValid())
-        return false;
-
-    if (draggedItemInfo.getType().toString() != "libraryItem")
-        return false;
-
-    return true;
+    return false;
 }
 
 void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
