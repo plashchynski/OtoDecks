@@ -1,5 +1,6 @@
 #include <iostream>
 #include <filesystem>
+#include <cassert>
 
 #include <JuceHeader.h>
 #include "LibraryComponent.h"
@@ -26,6 +27,11 @@ LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
 
 LibraryComponent::~LibraryComponent()
 {
+    /**
+     * to avoid an assertion in juce_ListBox.cpp:63
+     * More information on this issue: https://forum.juce.com/t/issue-with-tablelistbox-and-accessibility/53866
+    */
+    tableComponent.setModel(nullptr);
 }
 
 void LibraryComponent::paint (juce::Graphics& g)
@@ -177,6 +183,9 @@ void LibraryComponent::addFile(const std::string& filePath)
     // Update the itemsToDisplay vector based on the search query and with a new item
     updateDisplayedItems();
 
+    // Save the library to the file
+    saveLibrary();
+
     // Update the table
     tableComponent.updateContent();
 }
@@ -222,8 +231,83 @@ void LibraryComponent::updateDisplayedItems()
 
 juce::var LibraryComponent::getDragSourceDescription(const juce::SparseSet<int>& currentlySelectedRows)
 {
-    juce::ValueTree draggedItemInfo{"libraryItem"};
+    juce::ValueTree draggedItemInfo{"LibraryItem"};
     draggedItemInfo.setProperty("filePath", itemsToDisplay[currentlySelectedRows[0]].filePath, nullptr);
 
     return draggedItemInfo.toXmlString();
+}
+
+void LibraryComponent::saveLibrary()
+{
+    juce::Identifier libraryId("Library");
+    juce::ValueTree libraryInfo{libraryId};
+
+    for (int i=0; i<allItems.size(); i++)
+    {
+        LibraryItem item = allItems[i];
+        juce::ValueTree itemInfo{"LibraryItem"+juce::String(i)};
+        itemInfo.setProperty("filePath", item.filePath, nullptr);
+        itemInfo.setProperty("title", item.title, nullptr);
+        itemInfo.setProperty("artist", item.artist, nullptr);
+        itemInfo.setProperty("duration", item.duration, nullptr);
+
+        std::cout << "Saving item: " << itemInfo.getProperty("filePath").toString() << std::endl;
+
+        libraryInfo.addChild(itemInfo, i, nullptr);
+    }
+
+    juce::File file{juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("OtoDecksLibrary.otdl")};
+    juce::FileOutputStream output(file);
+
+    std::cout << "Saving the library to the file: " << file.getFullPathName() << std::endl;
+
+    if (!output.openedOk()) {
+        std::cerr << "ERROR: Failed to open file for writing" << std::endl;
+        return;
+    }
+
+    // Rewrite the whole file with a new data
+    output.setPosition(0);
+    output.truncate();
+
+    assert(libraryInfo.isValid());
+
+    libraryInfo.writeToStream(output);
+    output.flush();
+
+    std::cout << "Library saved." << std::endl;
+}
+
+void LibraryComponent::loadLibrary()
+{
+    juce::File file{juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("OtoDecksLibrary.otdl")};
+    if (!file.existsAsFile())
+    {
+        std::cout << "Library file does not exist." << std::endl;
+        return;
+    }
+
+    std::cout << "Loading library from the file: " << file.getFullPathName() << std::endl;
+
+    juce::FileInputStream input(file);
+    juce::ValueTree libraryInfo = juce::ValueTree::readFromStream(input);
+
+    assert(libraryInfo.isValid());
+
+    for (auto itemInfo : libraryInfo)
+    {
+        LibraryItem item;
+        item.filePath = itemInfo.getProperty("filePath");
+        item.title = itemInfo.getProperty("title");
+        item.artist = itemInfo.getProperty("artist");
+        item.duration = itemInfo.getProperty("duration");
+
+        allItems.push_back(item);
+    }
+
+    updateDisplayedItems();
+
+    tableComponent.updateContent();
+
+    std::cout << "Library loaded" << std::endl;
 }

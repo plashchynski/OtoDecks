@@ -23,6 +23,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(deckGUI2);
     addAndMakeVisible(libraryComponent);
 
+    libraryComponent.loadLibrary();
 
     formatManager.registerBasicFormats();
 }

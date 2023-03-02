@@ -55,6 +55,16 @@ public:
     */
     std::vector<LibraryItem> searchLibrary(const juce::String & query);
 
+    /**
+     * Save the library to a file
+    */
+    void saveLibrary();
+
+    /**
+     * Load the library from a file
+    */
+    void loadLibrary();
+
 private:
     juce::AudioFormatManager& formatManager;
     juce::TableListBox tableComponent;
