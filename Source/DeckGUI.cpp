@@ -21,7 +21,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(waveformDisplay);
 
     loadButton.addListener(this);
-    playControlButton.setListener(this);
+    playControlButton.addChangeListener(this);
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
@@ -154,14 +154,13 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
     waveformDisplay.loadURL(url);
 }
 
-void DeckGUI::playButtonClicked()
+void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
-    player->start();
-    playControlButton.playingStarted();
-}
-
-void DeckGUI::pauseButtonClicked()
-{
-    player->stop();
-    playControlButton.playingStopped();
+    if (source == &playControlButton)
+    {
+        if (playControlButton.isPlaying())
+            player->start();
+        else
+            player->stop();
+    }
 }

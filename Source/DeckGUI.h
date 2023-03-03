@@ -15,7 +15,7 @@ class DeckGUI   :   public juce::Component,
                     public juce::DragAndDropTarget,
                     public juce::TextEditor::Listener,
                     public juce::Timer,
-                    public PlayControlButton::Listener
+                    public juce::ChangeListener
 {
 public:
     DeckGUI(DJAudioPlayer* player,
@@ -43,9 +43,8 @@ public:
     /** implement juce::Timer */
     void timerCallback() override;
 
-    /** implement PlayControlButton::Listener */
-    void playButtonClicked() override;
-    void pauseButtonClicked() override;
+    /** implement juce::ChangeListener */
+    void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 
 private:
     PlayControlButton playControlButton;

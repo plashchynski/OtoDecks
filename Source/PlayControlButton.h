@@ -4,28 +4,17 @@
 
 
 class PlayControlButton  :  public juce::ImageButton,
-                            public juce::Button::Listener
+                            public juce::Button::Listener,
+                            public juce::ChangeBroadcaster
 {
 public:
     PlayControlButton();
     void buttonClicked(juce::Button *) override;
-
-    class Listener
-    {
-    public:
-        virtual ~Listener() = default;
-
-        virtual void playButtonClicked() = 0;
-        virtual void pauseButtonClicked() = 0;
-    };
-
-    void setListener(Listener* newListener);
-    void playingStarted();
-    void playingStopped();
+    void setPlaying(bool isPlaying);
+    bool isPlaying() const;
 
 private:
     bool playing = false;
-    Listener* listener = nullptr;
     juce::Image pauseButtonImg = juce::ImageCache::getFromMemory(BinaryData::pausebutton_png, BinaryData::pausebutton_pngSize);
     juce::Image playButtonImg = juce::ImageCache::getFromMemory(BinaryData::playbutton_png, BinaryData::playbutton_pngSize);
 
