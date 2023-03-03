@@ -23,29 +23,29 @@ PlayControlButton::PlayControlButton() : juce::ImageButton("PlayControlButton")
 
 void PlayControlButton::buttonClicked(juce::Button *)
 {
-    playing = !playing;
-
     if (listener != nullptr)
     {
         if (playing)
-            listener->startPlayButtonClicked();
+            listener->pauseButtonClicked();
         else
-            listener->stopPlayButtonClicked();
+            listener->playButtonClicked();
     }
 }
 
-void PlayControlButton::setListener(Listener& newListener)
+void PlayControlButton::setListener(Listener* newListener)
 {
-    listener = &newListener;
+    listener = newListener;
 }
 
 void PlayControlButton::playingStarted()
 {
+    playing = true;
     updateButtonImage(pauseButtonImg);
 }
 
-void PlayControlButton::playingStoped()
+void PlayControlButton::playingStopped()
 {
+    playing = false;
     updateButtonImage(playButtonImg);
 }
 

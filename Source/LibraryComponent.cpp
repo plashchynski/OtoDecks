@@ -97,24 +97,6 @@ void LibraryComponent::paintCell(juce::Graphics& g, int rowNumber, int columnId,
     }
 }
 
-juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int columnId,
-                                            bool isRowSelected,
-                                            juce::Component* existingComponentToUpdate)
-{
-    if (columnId == 4)
-    {
-        if (existingComponentToUpdate == nullptr)
-        {
-            juce::TextButton* button = new juce::TextButton("Play");
-            juce::String id{std::to_string(rowNumber)};
-            button->setComponentID(id);
-            button->addListener(this);
-            existingComponentToUpdate = button;
-        }
-    }
-    return existingComponentToUpdate;
-}
-
 void LibraryComponent::buttonClicked (juce::Button* button)
 {
     int id = std::stoi(button->getComponentID().toStdString());

@@ -15,13 +15,13 @@ public:
     public:
         virtual ~Listener() = default;
 
-        virtual void startPlayButtonClicked() = 0;
-        virtual void stopPlayButtonClicked() = 0;
+        virtual void playButtonClicked() = 0;
+        virtual void pauseButtonClicked() = 0;
     };
 
-    void setListener(Listener& newListener);
+    void setListener(Listener* newListener);
     void playingStarted();
-    void playingStoped();
+    void playingStopped();
 
 private:
     bool playing = false;

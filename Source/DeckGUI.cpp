@@ -11,8 +11,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
                formatManager(_formatManager),
                waveformDisplay(_formatManager, cacheToUse)
 {
-    addAndMakeVisible(playButton);
-    addAndMakeVisible(stopButton);
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
 
@@ -22,9 +20,8 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(waveformDisplay);
 
-    playButton.addListener(this);
-    stopButton.addListener(this);
     loadButton.addListener(this);
+    playControlButton.setListener(this);
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
@@ -60,9 +57,8 @@ void DeckGUI::paint (juce::Graphics& g)
 void DeckGUI::resized()
 {
     playControlButton.setBounds(0, 0, playControlButton.getWidth(), playControlButton.getHeight());
+    waveformDisplay.setBounds(playControlButton.getWidth(), 0, getWidth(), getHeight());
     // double rowH = getHeight() / 8;
-    // playButton.setBounds(0, 0, getWidth(), rowH);
-    // stopButton.setBounds(0, rowH, getWidth(), rowH);
     // volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
     // speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
     // posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
@@ -72,17 +68,6 @@ void DeckGUI::resized()
 
 void DeckGUI::buttonClicked(juce::Button* button)
 {
-    if (button == &playButton)
-    {
-        std::cout << "Play button was clicked " << std::endl;
-        player->start();
-    }
-    if (button == &stopButton)
-    {
-        std::cout << "Stop button was clicked " << std::endl;
-        player->stop();
-
-    }
     if (button == &loadButton)
     {
         auto fileChooserFlags =
@@ -167,4 +152,16 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
     juce::URL url{file};
     player->loadURL(url);
     waveformDisplay.loadURL(url);
+}
+
+void DeckGUI::playButtonClicked()
+{
+    player->start();
+    playControlButton.playingStarted();
+}
+
+void DeckGUI::pauseButtonClicked()
+{
+    player->stop();
+    playControlButton.playingStopped();
 }

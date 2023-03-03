@@ -90,7 +90,9 @@ void MainComponent::resized()
     */
     const int minDeckHeight = 100;
     const int deckHeight = std::max(getHeight()/6, minDeckHeight);
+
     deckGUI1.setBounds(0, 0, getWidth(), deckHeight);
-    deckGUI2.setBounds(0, deckHeight, getWidth(), deckHeight*2);
+    deckGUI2.setBounds(0, deckHeight, getWidth(), deckHeight);
+
     libraryComponent.setBounds(0, deckHeight*2, getWidth(), getHeight());
 }
