@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "WaveformDisplay.h"
+#include "PlayControlButton.h"
 
 //==============================================================================
 /*
@@ -30,7 +31,7 @@ public:
     /** implement juce::Slider::Listener */
     void sliderValueChanged(juce::Slider *slider) override;
 
-    /** implement juce::FileDragAndDropTarget */
+    /** implement juce::FileDragAndDropTarget */ 
     bool isInterestedInFileDrag(const juce::StringArray &files) override;
     void filesDropped(const juce::StringArray &files, int x, int y) override;
 
@@ -42,6 +43,8 @@ public:
     void timerCallback() override;
 
 private:
+    PlayControlButton playControlButton;
+
     juce::TextButton playButton{"PLAY"};
     juce::TextButton stopButton{"STOP"};
     juce::TextButton loadButton{"LOAD"};

@@ -34,9 +34,18 @@ jucer_project_settings(
   CXX_LANGUAGE_STANDARD "C++17"
 )
 
+jucer_project_files("OtoDecks/Assets"
+# Compile   Xcode     Binary    File
+#           Resource  Resource
+  .         .         x         "../../Downloads/pause-button.png"
+  .         .         x         "../../Downloads/play-button.png"
+)
+
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  x         .         .         "Source/PlayControlButton.cpp"
+  .         .         .         "Source/PlayControlButton.h"
   x         .         .         "Source/Formatter.cpp"
   .         .         .         "Source/Formatter.h"
   x         .         .         "Source/LibraryComponent.cpp"
@@ -47,15 +56,10 @@ jucer_project_files("OtoDecks/Source"
   .         .         .         "Source/DeckGUI.h"
   x         .         .         "Source/DJAudioPlayer.cpp"
   .         .         .         "Source/DJAudioPlayer.h"
+  .         .         .         "Source/LibraryItem.h"
   x         .         .         "Source/Main.cpp"
   .         .         .         "Source/MainComponent.h"
   x         .         .         "Source/MainComponent.cpp"
-)
-
-jucer_project_files("OtoDecks"
-# Compile   Xcode     Binary    File
-#           Resource  Resource
-  .         .         .         "Source/LibraryItem.h"
 )
 
 jucer_project_module(

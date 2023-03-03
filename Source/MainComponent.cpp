@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "MainComponent.h"
 
 MainComponent::MainComponent()
@@ -73,7 +75,22 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    deckGUI1.setBounds(0, 0, getWidth()/2, getHeight()/2);
-    deckGUI2.setBounds(getWidth()/2, 0, getWidth()/2, getHeight()/2);
-    libraryComponent.setBounds(0, getHeight()/2, getWidth(), getHeight());
+    /**
+     * The layout is:
+     * 
+     * +-----------------+
+     * | Deck 1          | height is deckHeight
+     * +-----------------+
+     * | Deck 2          |
+     * +-----------------+
+     * | Library         |
+     * |                 |
+     * |                 |
+     * +-----------------+
+    */
+    const int minDeckHeight = 100;
+    const int deckHeight = std::max(getHeight()/6, minDeckHeight);
+    deckGUI1.setBounds(0, 0, getWidth(), deckHeight);
+    deckGUI2.setBounds(0, deckHeight, getWidth(), deckHeight*2);
+    libraryComponent.setBounds(0, deckHeight*2, getWidth(), getHeight());
 }

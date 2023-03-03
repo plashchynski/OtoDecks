@@ -11,10 +11,10 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
                formatManager(_formatManager),
                waveformDisplay(_formatManager, cacheToUse)
 {
-
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(loadButton);
+    addAndMakeVisible(playControlButton);
 
     addAndMakeVisible(volSlider);
     addAndMakeVisible(speedSlider);
@@ -59,14 +59,15 @@ void DeckGUI::paint (juce::Graphics& g)
 
 void DeckGUI::resized()
 {
-    double rowH = getHeight() / 8;
-    playButton.setBounds(0, 0, getWidth(), rowH);
-    stopButton.setBounds(0, rowH, getWidth(), rowH);
-    volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
-    speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-    posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
-    waveformDisplay.setBounds(0, rowH * 5, getWidth(), rowH * 2);
-    loadButton.setBounds(0, rowH * 7, getWidth(), rowH);
+    playControlButton.setBounds(0, 0, playControlButton.getWidth(), playControlButton.getHeight());
+    // double rowH = getHeight() / 8;
+    // playButton.setBounds(0, 0, getWidth(), rowH);
+    // stopButton.setBounds(0, rowH, getWidth(), rowH);
+    // volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
+    // speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
+    // posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
+    // waveformDisplay.setBounds(0, rowH * 5, getWidth(), rowH * 2);
+    // loadButton.setBounds(0, rowH * 7, getWidth(), rowH);
 }
 
 void DeckGUI::buttonClicked(juce::Button* button)
