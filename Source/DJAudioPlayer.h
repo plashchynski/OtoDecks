@@ -25,14 +25,23 @@ public:
     void setGain(double gain);
     void setSpeed(double ratio);
     void setPosition(double posInSecs);
-    void setPositionRelative(double pos);
-
 
     void start();
     void stop();
 
-    /** get the relative position of the playhead */
+    /**
+     * get the relative position of the playhead
+     *
+     * @return a value between 0 and 1, where 0 is the beginning of the track and 1 is the end
+     */
     double getPositionRelative();
+
+    /**
+     * Set the relative position of the playhead
+     *
+     * @param pos a value between 0 and 1, where 0 is the beginning of the track and 1 is the end
+    */
+    void setPositionRelative(double pos);
 
 private:
     juce::AudioFormatManager& formatManager;
