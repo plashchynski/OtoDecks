@@ -21,7 +21,9 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(waveformDisplay);
 
     loadButton.addListener(this);
+
     playControlButton.addChangeListener(this);
+    player->addChangeListener(this);
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
@@ -162,5 +164,13 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
             player->start();
         else
             player->stop();
+    }
+
+    if (source == player)
+    {
+        if (player->isPlaying())
+            playControlButton.setPlaying(true);
+        else
+            playControlButton.setPlaying(false);
     }
 }

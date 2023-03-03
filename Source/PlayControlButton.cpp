@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    PlayControlButton.cpp
-    Created: 3 Mar 2023 3:44:03pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
 #include "PlayControlButton.h"
 

@@ -12,7 +12,10 @@
 
 #include <JuceHeader.h>
 
-class DJAudioPlayer : public juce::AudioSource {
+class DJAudioPlayer : public juce::AudioSource,
+                      public juce::ChangeListener,
+                      public juce::ChangeBroadcaster
+{
 public:
     DJAudioPlayer(juce::AudioFormatManager& _formatManager);
     ~DJAudioPlayer();
@@ -28,6 +31,14 @@ public:
 
     void start();
     void stop();
+
+    /**
+     * @return true if the player is currently playing
+     */
+    bool isPlaying() const;
+
+    // implementing juce::ChangeListener
+    void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
     /**
      * get the relative position of the playhead

@@ -3,7 +3,7 @@
 DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager& _formatManager)
 : formatManager(_formatManager)
 {
-
+    transportSource.addChangeListener(this);
 }
 
 DJAudioPlayer::~DJAudioPlayer()
@@ -93,4 +93,21 @@ void DJAudioPlayer::stop()
 double DJAudioPlayer::getPositionRelative()
 {
     return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
+}
+
+bool DJAudioPlayer::isPlaying() const
+{
+    return transportSource.isPlaying();
+}
+
+// implementing juce::ChangeListener
+void DJAudioPlayer::changeListenerCallback(juce::ChangeBroadcaster* source)
+{
+    if (source == &transportSource)
+    {
+        if (transportSource.isPlaying())
+        {
+            sendChangeMessage();
+        }
+    }
 }
