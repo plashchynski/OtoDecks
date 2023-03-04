@@ -37,8 +37,8 @@ jucer_project_settings(
 jucer_project_files("OtoDecks/Assets"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
-  .         .         x         "../../Downloads/pause-button.png"
-  .         .         x         "../../Downloads/play-button.png"
+  .         .         x         "Assets/pause-button.png"
+  .         .         x         "Assets/play-button.png"
 )
 
 jucer_project_files("OtoDecks/Source"
