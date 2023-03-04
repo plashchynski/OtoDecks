@@ -19,10 +19,10 @@
             file="Source/LibraryComponent.cpp"/>
       <FILE id="kodFid" name="LibraryComponent.h" compile="0" resource="0"
             file="Source/LibraryComponent.h"/>
-      <FILE id="lOmt7Y" name="WaveformDisplay.cpp" compile="1" resource="0"
-            file="Source/WaveformDisplay.cpp"/>
-      <FILE id="ndOagf" name="WaveformDisplay.h" compile="0" resource="0"
-            file="Source/WaveformDisplay.h"/>
+      <FILE id="lOmt7Y" name="WaveformSlider.cpp" compile="1" resource="0"
+            file="Source/WaveformSlider.cpp"/>
+      <FILE id="ndOagf" name="WaveformSlider.h" compile="0" resource="0"
+            file="Source/WaveformSlider.h"/>
       <FILE id="VedzS9" name="DeckGUI.cpp" compile="1" resource="0" file="Source/DeckGUI.cpp"/>
       <FILE id="AAfZll" name="DeckGUI.h" compile="0" resource="0" file="Source/DeckGUI.h"/>
       <FILE id="FJ3kdo" name="DJAudioPlayer.cpp" compile="1" resource="0"

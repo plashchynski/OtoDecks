@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
-#include "WaveformDisplay.h"
+#include "WaveformSlider.h"
 #include "PlayControlButton.h"
 
 //==============================================================================
@@ -57,7 +57,7 @@ private:
 
     juce::FileChooser fChooser{"Select a file..."};
 
-    WaveformDisplay waveformDisplay;
+    WaveformSlider waveformDisplay;
 
     juce::AudioFormatManager& formatManager;
 

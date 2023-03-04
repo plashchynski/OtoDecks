@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    WaveformDisplay.h
-    Created: 24 Feb 2023 1:30:06pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
@@ -15,13 +5,13 @@
 //==============================================================================
 /*
 */
-class WaveformDisplay  :  public juce::Component,
+class WaveformSlider  :  public juce::Component,
                           public juce::ChangeListener
 {
 public:
-    WaveformDisplay(juce::AudioFormatManager & 	formatManagerToUse,
+    WaveformSlider(juce::AudioFormatManager & 	formatManagerToUse,
                     juce::AudioThumbnailCache & 	cacheToUse);
-    ~WaveformDisplay() override;
+    ~WaveformSlider() override;
 
     void paint (juce::Graphics&) override;
     void resized() override;
@@ -38,5 +28,5 @@ private:
     bool fileLoaded;
     double position;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveformDisplay)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WaveformSlider)
 };

@@ -1,18 +1,8 @@
-/*
-  ==============================================================================
-
-    WaveformDisplay.cpp
-    Created: 24 Feb 2023 1:30:06pm
-    Author:  Dzmitry Plashchynski
-
-  ==============================================================================
-*/
-
 #include <JuceHeader.h>
-#include "WaveformDisplay.h"
+#include "WaveformSlider.h"
 
 //==============================================================================
-WaveformDisplay::WaveformDisplay(juce::AudioFormatManager & 	formatManagerToUse,
+WaveformSlider::WaveformSlider(juce::AudioFormatManager & 	formatManagerToUse,
                                  juce::AudioThumbnailCache & 	cacheToUse) :
                                  audioThumb(1000, formatManagerToUse, cacheToUse),
                                  fileLoaded(false),
@@ -24,11 +14,11 @@ WaveformDisplay::WaveformDisplay(juce::AudioFormatManager & 	formatManagerToUse,
   audioThumb.addChangeListener(this);
 }
 
-WaveformDisplay::~WaveformDisplay()
+WaveformSlider::~WaveformSlider()
 {
 }
 
-void WaveformDisplay::paint (juce::Graphics& g)
+void WaveformSlider::paint (juce::Graphics& g)
 {
     /* This demo code just fills the component's background and
        draws some placeholder text to get you started.
@@ -65,14 +55,14 @@ void WaveformDisplay::paint (juce::Graphics& g)
     }
 }
 
-void WaveformDisplay::resized()
+void WaveformSlider::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
 }
 
-void WaveformDisplay::loadURL(juce::URL audioURL)
+void WaveformSlider::loadURL(juce::URL audioURL)
 {
     audioThumb.clear();
     fileLoaded  = audioThumb.setSource(new juce::URLInputSource(audioURL));
@@ -87,14 +77,14 @@ void WaveformDisplay::loadURL(juce::URL audioURL)
     }
 }
 
-void WaveformDisplay::changeListenerCallback (juce::ChangeBroadcaster *source)
+void WaveformSlider::changeListenerCallback (juce::ChangeBroadcaster *source)
 {
     std::cout << "wfd: change received! " << std::endl;
 
     repaint();
 }
 
-void WaveformDisplay::setPositionRelative(double pos)
+void WaveformSlider::setPositionRelative(double pos)
 {
     if (pos != position)
     {
