@@ -57,7 +57,7 @@ private:
 
     juce::FileChooser fChooser{"Select a file..."};
 
-    WaveformSlider waveformDisplay;
+    WaveformSlider waveformSlider;
 
     juce::AudioFormatManager& formatManager;
 
