@@ -6,8 +6,7 @@ WaveformSlider::WaveformSlider( juce::AudioFormatManager & 	formatManagerToUse,
                                 juce::AudioThumbnailCache & 	cacheToUse) :
                                     juce::Slider(juce::Slider::SliderStyle::LinearBar, juce::Slider::NoTextBox),
                                     audioThumb(1000, formatManagerToUse, cacheToUse),
-                                    fileLoaded(false),
-                                    position(0)
+                                    fileLoaded(false)
 {
     setLookAndFeel(&lookAndFeel);
     audioThumb.addChangeListener(this);
@@ -26,11 +25,6 @@ void WaveformSlider::loadURL(juce::URL audioURL)
 void WaveformSlider::changeListenerCallback (juce::ChangeBroadcaster *source)
 {
     repaint();
-}
-
-void WaveformSlider::setPositionRelative(double pos)
-{
-    setValue(pos);
 }
 
 void WaveformSlider::LookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,

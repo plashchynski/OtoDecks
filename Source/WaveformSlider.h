@@ -13,13 +13,9 @@ public:
 
     void loadURL(juce::URL audioURL);
 
-    /** set the relative position of the playhead*/
-    void setPositionRelative(double pos);
-
 private:
     juce::AudioThumbnail audioThumb;
     bool fileLoaded;
-    double position;
 
     class LookAndFeel : public juce::LookAndFeel_V4
     {

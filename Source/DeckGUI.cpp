@@ -103,7 +103,7 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
 
 void DeckGUI::timerCallback()
 {
-    waveformSlider.setPositionRelative(player->getPositionRelative());
+    waveformSlider.setValue(player->getPositionRelative());
 }
 
 /** implement FileDragAndDropTarget */
