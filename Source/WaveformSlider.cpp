@@ -48,7 +48,8 @@ void WaveformSlider::LookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int
         audioThumb.drawChannel(g, thumbArea, 0.0, audioThumb.getTotalLength(), 0, 1.0f);
 
         g.setColour(juce::Colours::lightgreen);
-        g.drawLine(sliderPos, y, sliderPos, y + height, 5.0f);
+        g.drawLine(sliderPos, y, sliderPos, y + height, 3.0f);
+        g.drawArrow(juce::Line<float>(sliderPos, y-5, sliderPos, y+15), 3.0f, 15.0f, 15.0f);
     }
     else
     {
