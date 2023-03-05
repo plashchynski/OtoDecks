@@ -79,20 +79,21 @@ void MainComponent::resized()
      * The layout is:
      * 
      * +-----------------+
-     * | Deck 1          | height is deckHeight
+     * | Deck 1          | height is fixed to 150px and cannot be grow or shrink
      * +-----------------+
      * | Deck 2          |
      * +-----------------+
-     * | Library         |
+     * | Library         | height is not fixed and can grow or shrink
      * |                 |
      * |                 |
      * +-----------------+
     */
-    const int minDeckHeight = 100;
-    const int deckHeight = std::max(getHeight()/6, minDeckHeight);
+    juce::FlexBox fb;
+    fb.flexDirection = juce::FlexBox::Direction::column;
 
-    deckGUI1.setBounds(0, 0, getWidth(), deckHeight);
-    deckGUI2.setBounds(0, deckHeight, getWidth(), deckHeight);
+    fb.items.add(juce::FlexItem(deckGUI1).withMinHeight(150.0f).withFlex(0, 0));
+    fb.items.add(juce::FlexItem(deckGUI2).withMinHeight(150.0f).withFlex(0, 0));
+    fb.items.add(juce::FlexItem(libraryComponent).withMinHeight(100.0f).withFlex(2, 2));
 
-    libraryComponent.setBounds(0, deckHeight*2, getWidth(), getHeight());
+    fb.performLayout(getLocalBounds().toFloat());
 }
