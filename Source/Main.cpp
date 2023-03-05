@@ -71,6 +71,24 @@ public:
             setFullScreen(true);
            #else
             setResizable(true, true);
+
+            // Disable screen saver
+            juce::Desktop::getInstance().setScreenSaverEnabled(false);
+
+            // Get the current screen size
+            juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+
+            // Set minimum height and width for the window in pixels
+            const int minWidth = 1024;
+            const int minHeight = 768;
+
+            // Get the constrainer that determines the screen size limits
+            juce::ComponentBoundsConstrainer* constrainer = getConstrainer();
+
+            // The minimum size should not be less than the screen size
+            constrainer->setMinimumWidth(juce::jmin(minWidth, screenArea.getWidth()));
+            constrainer->setMinimumHeight(juce::jmin(minHeight, screenArea.getHeight()));
+
             centreWithSize(getWidth(), getHeight());
            #endif
 
