@@ -49,7 +49,6 @@ void DJAudioPlayer::setGain(double gain)
     else {
         transportSource.setGain(gain);
     }
-
 }
 
 void DJAudioPlayer::setSpeed(double ratio)
