@@ -9,7 +9,15 @@ WaveformSlider::WaveformSlider( juce::AudioFormatManager & 	formatManagerToUse,
                                     fileLoaded(false)
 {
     setLookAndFeel(&lookAndFeel);
+    setRange(0.0, 1.0);
+    setValue(0.0);
     audioThumb.addChangeListener(this);
+}
+
+WaveformSlider::~WaveformSlider()
+{
+    // This is necessary to avoid an assertion failure in the juce::LookAndFeel destructor
+    setLookAndFeel(nullptr);
 }
 
 void WaveformSlider::loadURL(juce::URL audioURL)

@@ -2,12 +2,13 @@
 
 #include <JuceHeader.h>
 
-class WaveformSlider  :  public juce::Slider,
-                          public juce::ChangeListener
+class WaveformSlider:   public juce::Slider,
+                        public juce::ChangeListener
 {
 public:
     WaveformSlider(juce::AudioFormatManager& formatManagerToUse,
                     juce::AudioThumbnailCache& cacheToUse);
+    ~WaveformSlider();
 
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 

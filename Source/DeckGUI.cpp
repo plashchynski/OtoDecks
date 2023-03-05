@@ -28,6 +28,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volSlider.addListener(this);
     speedSlider.addListener(this);
     posSlider.addListener(this);
+    waveformSlider.addListener(this);
 
     volSlider.setRange(0.0, 1.0);
     speedSlider.setRange(0.0, 100.0);
@@ -95,7 +96,7 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
         player->setSpeed(slider->getValue());
     }
 
-    if (slider == &posSlider)
+    if (slider == &waveformSlider)
     {
         player->setPositionRelative(slider->getValue());
     }
@@ -103,7 +104,9 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
 
 void DeckGUI::timerCallback()
 {
-    waveformSlider.setValue(player->getPositionRelative());
+    if (player->isPlaying()) {
+        waveformSlider.setValue(player->getPositionRelative());
+    }
 }
 
 /** implement FileDragAndDropTarget */
@@ -172,5 +175,7 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
             playControlButton.setPlaying(true);
         else
             playControlButton.setPlaying(false);
+
+        waveformSlider.setValue(player->getPositionRelative());
     }
 }
