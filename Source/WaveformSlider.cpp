@@ -2,64 +2,15 @@
 #include "WaveformSlider.h"
 
 //==============================================================================
-WaveformSlider::WaveformSlider(juce::AudioFormatManager & 	formatManagerToUse,
-                                 juce::AudioThumbnailCache & 	cacheToUse) :
-                                 audioThumb(1000, formatManagerToUse, cacheToUse),
-                                 fileLoaded(false),
-                                 position(0)
+WaveformSlider::WaveformSlider( juce::AudioFormatManager & 	formatManagerToUse,
+                                juce::AudioThumbnailCache & 	cacheToUse) :
+                                    juce::Slider(juce::Slider::SliderStyle::LinearBar, juce::Slider::NoTextBox),
+                                    audioThumb(1000, formatManagerToUse, cacheToUse),
+                                    fileLoaded(false),
+                                    position(0)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
-
-  audioThumb.addChangeListener(this);
-}
-
-WaveformSlider::~WaveformSlider()
-{
-}
-
-void WaveformSlider::paint (juce::Graphics& g)
-{
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
-
-    g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
-
-    g.setColour (juce::Colours::orange);
-
-    if(fileLoaded)
-    {
-        audioThumb.drawChannel(g,
-            getLocalBounds(),
-            0,
-            audioThumb.getTotalLength(),
-            0,
-            1.0f
-        );
-
-        g.setColour(juce::Colours::lightgreen);
-        g.drawRect(position * getWidth(), 0, getWidth() / 20, getHeight());
-    }
-    else
-    {
-        g.setFont(20.0f);
-        g.drawText("File not loaded...", getLocalBounds(),
-                     juce::Justification::centred, true);   // draw some placeholder text
-    }
-}
-
-void WaveformSlider::resized()
-{
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
+    setLookAndFeel(&lookAndFeel);
+    audioThumb.addChangeListener(this);
 }
 
 void WaveformSlider::loadURL(juce::URL audioURL)
@@ -68,27 +19,40 @@ void WaveformSlider::loadURL(juce::URL audioURL)
     fileLoaded  = audioThumb.setSource(new juce::URLInputSource(audioURL));
     if (fileLoaded)
     {
-        std::cout << "wfd: loaded! " << std::endl;
         repaint();
-    }
-    else
-    {
-        std::cout << "wfd: not loaded! " << std::endl;
     }
 }
 
 void WaveformSlider::changeListenerCallback (juce::ChangeBroadcaster *source)
 {
-    std::cout << "wfd: change received! " << std::endl;
-
     repaint();
 }
 
 void WaveformSlider::setPositionRelative(double pos)
 {
-    if (pos != position)
+    setValue(pos);
+}
+
+void WaveformSlider::LookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,
+                                       float sliderPos,
+                                       float minSliderPos,
+                                       float maxSliderPos,
+                                       const juce::Slider::SliderStyle style, juce::Slider& slider)
+{
+    g.fillAll(findColour(juce::ResizableWindow::backgroundColourId));
+    g.setColour (juce::Colours::orange);
+
+    if (fileLoaded)
     {
-        position = pos;
-        repaint();
+        juce::Rectangle<int> thumbArea(x, y, width, height);
+        audioThumb.drawChannel(g, thumbArea, 0.0, audioThumb.getTotalLength(), 0, 1.0f);
+
+        g.setColour(juce::Colours::lightgreen);
+        g.drawLine(sliderPos, y, sliderPos, y + height, 5.0f);
+    }
+    else
+    {
+        g.setFont(20.0f);
+        g.drawFittedText("No file loaded", x, y, width, height, juce::Justification::centred, 1);
     }
 }
