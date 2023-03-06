@@ -163,9 +163,9 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &playControlButton)
     {
-        if (playControlButton.isPlaying())
+        if (playControlButton.getStatus() == PlayControlButton::Status::PlayRequested)
             player->start();
-        else
+        else if (playControlButton.getStatus() == PlayControlButton::Status::PauseRequested)
             player->stop();
     }
 

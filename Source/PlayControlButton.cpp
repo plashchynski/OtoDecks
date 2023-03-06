@@ -6,36 +6,50 @@ PlayControlButton::PlayControlButton() : juce::ImageButton("PlayControlButton")
     setMouseCursor(juce::MouseCursor::PointingHandCursor);
 
     addListener(this);
-
-    // By default, the button is in the "stopped" state, showing the play button
-    updateButtonImage(playButtonImg);
+    updateButtonImage();
 }
 
 void PlayControlButton::buttonClicked(juce::Button *)
 {
-    setPlaying(!playing);
+    if (status == Playing)
+        status = PauseRequested;
+    else if (status == Paused)
+        status = PlayRequested;
+
+    updateButtonImage();
+    sendChangeMessage();
 }
 
 void PlayControlButton::setPlaying(bool isPlaying)
 {
-    if (playing == isPlaying)
-        return;
-
-    playing = isPlaying;
-
-    if (playing)
-        updateButtonImage(pauseButtonImg);
+    if (isPlaying)
+        status = Playing;
     else
-        updateButtonImage(playButtonImg);
+        status = Paused;
 
-    sendChangeMessage();
+    updateButtonImage();
 }
 
-bool PlayControlButton::isPlaying() const {
-    return playing;
+void PlayControlButton::updateButtonImage()
+{
+    switch(status)
+    {
+        case PauseRequested:
+            [[fallthrough]];
+        case Playing:
+            setButtonImage(pauseButtonImg);
+            break;
+        case PlayRequested:
+            [[fallthrough]];
+        case Paused:
+            setButtonImage(playButtonImg);
+            break;
+        default:
+            break;
+    }
 }
 
-void PlayControlButton::updateButtonImage(const juce::Image& buttonImg)
+void PlayControlButton::setButtonImage(const juce::Image& buttonImg)
 {
     setImages(true, false, true,
                 buttonImg, 1.0f, juce::Colours::transparentBlack, // Normal

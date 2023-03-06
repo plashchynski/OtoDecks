@@ -86,21 +86,21 @@ This functionality is implemented in `LibraryComponent::saveLibrary` and `Librar
 
 1. To ensure the app has enough space to display all the controls, I set the minimum size of the application window to `1024x768` pixels, but not less than the user's screen resolution. This is done by determining the screen size and then setting the minimum size for the `ComponentBoundsConstrainer` instance in the `MainWindow::MainWindow` method in `Main.cpp`:
 
-```c++
-    // Get the current screen size
-    juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+    ```c++
+        // Get the current screen size
+        juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getMainDisplay().userArea;
 
-    // Set minimum height and width for the window in pixels
-    const int minWidth = 1024;
-    const int minHeight = 768;
+        // Set minimum height and width for the window in pixels
+        const int minWidth = 1024;
+        const int minHeight = 768;
 
-    // Get the constrainer that determines the screen size limits
-    juce::ComponentBoundsConstrainer* constrainer = getConstrainer();
+        // Get the constrainer that determines the screen size limits
+        juce::ComponentBoundsConstrainer* constrainer = getConstrainer();
 
-    // The minimum size should not be less than the screen size
-    constrainer->setMinimumWidth(juce::jmin(minWidth, screenArea.getWidth()));
-    constrainer->setMinimumHeight(juce::jmin(minHeight, screenArea.getHeight()));
-```
+        // The minimum size should not be less than the screen size
+        constrainer->setMinimumWidth(juce::jmin(minWidth, screenArea.getWidth()));
+        constrainer->setMinimumHeight(juce::jmin(minHeight, screenArea.getHeight()));
+    ```
 
 2. I've disabled a screen saver and a screen lock on Windows and macOS, which is a common practice for music applications. This is done by calling `juce::Desktop::getInstance().setScreenSaverEnabled(false)` in the `MainWindow::MainWindow` method in `Main.cpp`.
 

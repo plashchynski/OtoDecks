@@ -102,11 +102,12 @@ bool DJAudioPlayer::isPlaying() const
 // implementing juce::ChangeListener
 void DJAudioPlayer::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
+    /**
+     * If the playback status (playing/stopped) has changed, we need to notify the listeners,
+     * to propagate the change to the listeners to update the GUI.
+     * */ 
     if (source == &transportSource)
     {
-        if (transportSource.isPlaying())
-        {
-            sendChangeMessage();
-        }
+        sendChangeMessage();
     }
 }
