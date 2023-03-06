@@ -33,8 +33,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volSlider.setRange(0.0, 1.0);
     speedSlider.setRange(0.0, 100.0);
     posSlider.setRange(0.0, 1.0);
-
-    startTimer(500);
 }
 
 DeckGUI::~DeckGUI()
@@ -44,13 +42,6 @@ DeckGUI::~DeckGUI()
 
 void DeckGUI::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (juce::Colours::grey);
@@ -59,14 +50,16 @@ void DeckGUI::paint (juce::Graphics& g)
 
 void DeckGUI::resized()
 {
-    playControlButton.setBounds(0, 0, playControlButton.getWidth(), playControlButton.getHeight());
-    waveformSlider.setBounds(playControlButton.getWidth(), 0, getWidth(), getHeight());
-    // double rowH = getHeight() / 8;
-    // volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
-    // speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-    // posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
-    // waveformSlider.setBounds(0, rowH * 5, getWidth(), rowH * 2);
-    // loadButton.setBounds(0, rowH * 7, getWidth(), rowH);
+    juce::Grid grid;
+    using Track = juce::Grid::TrackInfo;
+    using Fr = juce::Grid::Fr;
+
+    grid.templateRows = { Track (Fr (1)) };
+    grid.templateColumns = { Track (Fr (1)), Track (Fr (3)) };
+
+    grid.items = { juce::GridItem(playControlButton), juce::GridItem(waveformSlider) };
+
+    grid.performLayout (getLocalBounds());
 }
 
 void DeckGUI::buttonClicked(juce::Button* button)
@@ -78,7 +71,6 @@ void DeckGUI::buttonClicked(juce::Button* button)
         fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
         {
             player->loadURL(juce::URL{chooser.getResult()});
-            // and now the waveformSlider as well
             waveformSlider.loadURL(juce::URL{chooser.getResult()});
         });
     }
@@ -172,10 +164,15 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
     if (source == player)
     {
         if (player->isPlaying())
+        {
+            startTimer(500);
             playControlButton.setPlaying(true);
+        }
         else
+        {
             playControlButton.setPlaying(false);
-
+            stopTimer();
+        }
         waveformSlider.setValue(player->getPositionRelative());
     }
 }
