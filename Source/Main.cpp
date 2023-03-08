@@ -76,7 +76,7 @@ public:
             juce::Desktop::getInstance().setScreenSaverEnabled(false);
 
             // Get the current screen size
-            juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+            juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->userArea;
 
             // Set minimum height and width for the window in pixels
             const int minWidth = 1024;
