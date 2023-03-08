@@ -55,6 +55,9 @@ private:
     juce::Slider speedSlider;
     juce::Slider posSlider;
 
+    juce::Label titleLabel;
+    juce::Label artistLabel;
+
     juce::FileChooser fChooser{"Select a file..."};
 
     WaveformSlider waveformSlider;

@@ -28,7 +28,6 @@
       <FILE id="FJ3kdo" name="DJAudioPlayer.cpp" compile="1" resource="0"
             file="Source/DJAudioPlayer.cpp"/>
       <FILE id="tD4y8L" name="DJAudioPlayer.h" compile="0" resource="0" file="Source/DJAudioPlayer.h"/>
-      <FILE id="QqhGjC" name="LibraryItem.h" compile="0" resource="0" file="Source/LibraryItem.h"/>
       <FILE id="V1OK3W" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="QdvPEx" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="i4lquP" name="MainComponent.cpp" compile="1" resource="0"

@@ -18,6 +18,9 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(speedSlider);
     addAndMakeVisible(posSlider);
 
+    addAndMakeVisible(titleLabel);
+    addAndMakeVisible(artistLabel);
+
     addAndMakeVisible(waveformSlider);
 
     loadButton.addListener(this);
@@ -50,14 +53,21 @@ void DeckGUI::paint (juce::Graphics& g)
 
 void DeckGUI::resized()
 {
-    juce::Grid grid;
+
     using Track = juce::Grid::TrackInfo;
     using Fr = juce::Grid::Fr;
 
-    grid.templateRows = { Track (Fr (1)) };
+    juce::Grid grid;
+
+    grid.templateRows = { Track (Fr (1)), Track (Fr (1)), Track (Fr (2)) };
     grid.templateColumns = { Track (Fr (1)), Track (Fr (3)) };
 
-    grid.items = { juce::GridItem(playControlButton), juce::GridItem(waveformSlider) };
+    grid.items = {
+        juce::GridItem(titleLabel).withArea(1, 1),
+        juce::GridItem(artistLabel).withArea(2, 1),
+        juce::GridItem(playControlButton).withArea(3, 1),
+        juce::GridItem(waveformSlider).withArea(1, 2, 4, 2)
+    };
 
     grid.performLayout (getLocalBounds());
 }
@@ -144,6 +154,9 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
     juce::String filePath = draggedItemInfo.getProperty("filePath");
+
+    titleLabel.setText(draggedItemInfo.getProperty("title"), juce::dontSendNotification);
+    artistLabel.setText(draggedItemInfo.getProperty("artist"), juce::dontSendNotification);
 
     juce::File file{filePath};
     juce::URL url{file};
