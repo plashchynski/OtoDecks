@@ -84,8 +84,7 @@ void DeckGUI::buttonClicked(juce::Button* button)
         juce::FileBrowserComponent::canSelectFiles;
         fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
         {
-            player->loadURL(juce::URL{chooser.getResult()});
-            waveformSlider.loadURL(juce::URL{chooser.getResult()});
+            loadFile(chooser.getResult());
         });
     }
 }
@@ -123,10 +122,7 @@ bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
         std::string extension = std::filesystem::path(file.toStdString()).extension();
         juce::AudioFormat* format = formatManager.findFormatForFileExtension(extension);
         if (format == nullptr)
-        {
-            std::cout << extension << " file extension is not suported" << std::endl;
             return false;
-        }
     }
 
     return true;
@@ -137,10 +133,7 @@ void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
     if (files.size() > 0)
     {
         juce::File file{files[0]};
-        juce::URL url{file};
-
-        player->loadURL(url);
-        waveformSlider.loadURL(url);
+        loadFile(file);
     }
 }
 
@@ -163,9 +156,7 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
     artistLabel.setText(draggedItemInfo.getProperty("artist"), juce::dontSendNotification);
 
     juce::File file{filePath};
-    juce::URL url{file};
-    player->loadURL(url);
-    waveformSlider.loadURL(url);
+    loadFile(file);
 }
 
 void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
@@ -183,13 +174,21 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
         if (player->isPlaying())
         {
             startTimer(500);
-            playControlButton.setPlaying(true);
+            playControlButton.setStatus(PlayControlButton::Status::Playing);
         }
         else
         {
-            playControlButton.setPlaying(false);
+            playControlButton.setStatus(PlayControlButton::Status::Paused);
             stopTimer();
         }
         waveformSlider.setValue(player->getPositionRelative());
     }
+}
+
+void DeckGUI::loadFile(juce::File file)
+{
+    juce::URL url{file};
+    player->loadURL(url);
+    waveformSlider.loadURL(url);
+    playControlButton.setStatus(PlayControlButton::Status::Paused);
 }

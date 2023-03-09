@@ -21,6 +21,9 @@ MainComponent::MainComponent()
         setAudioChannels (2, 2);
     }
 
+
+    // This is required to make tooltips work in the components
+    addAndMakeVisible(tooltipWindow);
     addAndMakeVisible(deckGUI1);
     addAndMakeVisible(deckGUI2);
     addAndMakeVisible(libraryComponent);

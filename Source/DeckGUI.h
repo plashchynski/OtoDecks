@@ -46,6 +46,12 @@ public:
     /** implement juce::ChangeListener */
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 
+    /**
+     * Load a file into the deck
+     * @param file the file to load
+    */
+    void loadFile(juce::File file);
+
 private:
     PlayControlButton playControlButton;
 
