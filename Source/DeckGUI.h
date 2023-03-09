@@ -51,9 +51,8 @@ private:
 
     juce::TextButton loadButton{"LOAD"};
 
-    juce::Slider volSlider;
-    juce::Slider speedSlider;
-    juce::Slider posSlider;
+    juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
+    juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
 
     juce::Label titleLabel;
     juce::Label artistLabel;

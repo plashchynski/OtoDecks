@@ -16,7 +16,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(volSlider);
     addAndMakeVisible(speedSlider);
-    addAndMakeVisible(posSlider);
 
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(artistLabel);
@@ -30,12 +29,15 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
-    posSlider.addListener(this);
     waveformSlider.addListener(this);
 
     volSlider.setRange(0.0, 1.0);
-    speedSlider.setRange(0.0, 100.0);
-    posSlider.setRange(0.0, 1.0);
+    volSlider.setValue(1.0);
+
+    speedSlider.setRange(0, 3.0);
+    speedSlider.setValue(1.0);
+
+    volSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxAbove, true, 100, 20);
 }
 
 DeckGUI::~DeckGUI()
@@ -59,17 +61,19 @@ void DeckGUI::resized()
 
     juce::Grid grid;
 
-    grid.templateRows = { Track (Fr (1)), Track (Fr (1)), Track (Fr (2)) };
-    grid.templateColumns = { Track (Fr (1)), Track (Fr (3)) };
+    grid.templateRows = { Track (Fr (1)), Track (Fr (1)), Track (Fr (3))  };
+    grid.templateColumns = { Track(), Track(), Track(Fr(1)), Track(Fr(1)) };
 
-    grid.items = {
-        juce::GridItem(titleLabel).withArea(1, 1),
-        juce::GridItem(artistLabel).withArea(2, 1),
-        juce::GridItem(playControlButton).withArea(3, 1),
-        juce::GridItem(waveformSlider).withArea(1, 2, 4, 2)
-    };
+    grid.items.addArray({
+        juce::GridItem(speedSlider).withWidth(100).withArea(1, 1, 4, 1),
+        juce::GridItem(volSlider).withWidth(100).withArea(1, 2, 4, 2),
+        juce::GridItem(playControlButton).withArea(1, 3),
+        juce::GridItem(titleLabel).withArea(1, 4),
+        juce::GridItem(artistLabel).withArea(2, 4),
+        juce::GridItem(waveformSlider).withArea(3, 3, 4, 5),
+    });
 
-    grid.performLayout (getLocalBounds());
+    grid.performLayout(getLocalBounds());
 }
 
 void DeckGUI::buttonClicked(juce::Button* button)
