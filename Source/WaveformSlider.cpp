@@ -26,6 +26,7 @@ void WaveformSlider::loadURL(juce::URL audioURL)
     fileLoaded  = audioThumb.setSource(new juce::URLInputSource(audioURL));
     if (fileLoaded)
     {
+        setValue(0.0f);
         repaint();
     }
 }

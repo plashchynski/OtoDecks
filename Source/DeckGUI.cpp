@@ -17,6 +17,12 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(volSlider);
     addAndMakeVisible(speedSlider);
 
+    addAndMakeVisible(volLabel);
+    addAndMakeVisible(speedLabel);
+
+    volLabel.setText("Volume", juce::dontSendNotification);
+    speedLabel.setText("Speed", juce::dontSendNotification);
+
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(artistLabel);
 
@@ -72,8 +78,10 @@ void DeckGUI::resized()
     grid.templateColumns = { Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
-        juce::GridItem(speedSlider).withWidth(100).withArea(1, 1, 4, 1),
-        juce::GridItem(volSlider).withWidth(100).withArea(1, 2, 4, 2),
+        juce::GridItem(speedLabel).withArea(1, 1),
+        juce::GridItem(volLabel).withArea(1, 2),
+        juce::GridItem(speedSlider).withWidth(100).withArea(2, 1, 4, 1),
+        juce::GridItem(volSlider).withWidth(100).withArea(2, 2, 4, 2),
         juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),
         juce::GridItem(loadButton).withWidth(40).withArea(1, 4),
         juce::GridItem(titleLabel).withArea(1, 5),

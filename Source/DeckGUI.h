@@ -57,7 +57,11 @@ private:
 
     juce::ImageButton loadButton{"Load"};
 
+
+    juce::Label volLabel;
     juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
+
+    juce::Label speedLabel;
     juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
 
     juce::Label titleLabel;
