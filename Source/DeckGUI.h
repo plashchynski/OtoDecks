@@ -4,6 +4,7 @@
 #include "DJAudioPlayer.h"
 #include "WaveformSlider.h"
 #include "PlayControlButton.h"
+#include "Fader.h"
 
 //==============================================================================
 /*
@@ -57,10 +58,11 @@ private:
 
     juce::ImageButton loadButton{"Load"};
 
+    Fader volumeFader{"Volume", "percent", 0.0, 1.0, 1.0};
 
-    juce::Label volLabel;
-    juce::Label volValueLabel;
-    juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
+    // juce::Label volLabel;
+    // juce::Label volValueLabel;
+    // juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
 
     juce::Label speedLabel;
     juce::Label speedValueLabel;

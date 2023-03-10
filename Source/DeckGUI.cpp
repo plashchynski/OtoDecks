@@ -14,9 +14,10 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
 
-    addAndMakeVisible(volLabel);
-    addAndMakeVisible(volValueLabel);
-    addAndMakeVisible(volSlider);
+    // addAndMakeVisible(volLabel);
+    // addAndMakeVisible(volValueLabel);
+    // addAndMakeVisible(volSlider);
+    addAndMakeVisible(volumeFader);
 
     addAndMakeVisible(speedLabel);
     addAndMakeVisible(speedValueLabel);
@@ -27,21 +28,21 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(waveformSlider);
 
+    volumeFader.addChangeListener(this);
+
     // Set up the sliders and its labels
-    volLabel.setText("Volume", juce::dontSendNotification);
+    // volLabel.setText("Volume", juce::dontSendNotification);
     speedLabel.setText("Speed", juce::dontSendNotification);
 
-    volSlider.addListener(this);
+    // volSlider.addListener(this);
     speedSlider.addListener(this);
     waveformSlider.addListener(this);
 
-    volSlider.setRange(0.0, 1.0);
-    volSlider.setValue(1.0);
+    // volSlider.setRange(0.0, 1.0);
+    // volSlider.setValue(1.0);
 
     speedSlider.setRange(0, 3.0);
     speedSlider.setValue(1.0);
-
-
 
     loadButton.addListener(this);
 
@@ -82,21 +83,21 @@ void DeckGUI::resized()
     grid.items.addArray({
         /**
          * +-----------------+-----------------+------------+------------+
-         * | speedLabel      | volLabel        |            |            |
-         * +-----------------+-----------------+------------+------------+
-         * | speedValueLabel | volValueLabel   |            |            |
-         * +-----------------+-----------------+------------+------------+
-         * | speedSlider     | volSlider       |            |            |
+         * | speedFader      | volLabel        |            |            |
+         * +                 +-----------------+------------+------------+
+         * |                 | volValueLabel   |            |            |
+         * +                 +-----------------+------------+------------+
+         * |                 | volSlider       |            |            |
          * +-----------------+-----------------+------------+------------+
         */
-        juce::GridItem(speedLabel).withArea(1, 1),
-        juce::GridItem(volLabel).withArea(1, 2),
+        juce::GridItem(volumeFader).withWidth(100).withArea(1, 2, 4, 2),
+        // juce::GridItem(volLabel).withArea(1, 2),
 
         juce::GridItem(speedValueLabel).withArea(2, 1),
-        juce::GridItem(volValueLabel).withArea(2, 2),
+        // juce::GridItem(volValueLabel).withArea(2, 2),
 
         juce::GridItem(speedSlider).withWidth(100).withArea(3, 1, 4, 1),
-        juce::GridItem(volSlider).withWidth(100).withArea(3, 2, 4, 2),
+        // juce::GridItem(volSlider).withWidth(100).withArea(3, 2, 4, 2),
 
         juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),
         juce::GridItem(loadButton).withWidth(40).withArea(1, 4),
@@ -123,11 +124,11 @@ void DeckGUI::buttonClicked(juce::Button* button)
 
 void DeckGUI::sliderValueChanged (juce::Slider *slider)
 {
-    if (slider == &volSlider)
-    {
-        player->setGain(slider->getValue());
-        volValueLabel.setText(juce::String::formatted("%d%%", (int)(slider->getValue() * 100)), juce::dontSendNotification);
-    }
+    // if (slider == &volSlider)
+    // {
+    //     player->setGain(slider->getValue());
+    //     volValueLabel.setText(juce::String::formatted("%d%%", (int)(slider->getValue() * 100)), juce::dontSendNotification);
+    // }
 
     if (slider == &speedSlider)
     {
@@ -195,6 +196,11 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
 
 void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
+    if (source == &volumeFader)
+    {
+        player->setGain(volumeFader.getValue());
+    }
+
     if (source == &playControlButton)
     {
         if (playControlButton.getStatus() == PlayControlButton::Status::PlayRequested)
