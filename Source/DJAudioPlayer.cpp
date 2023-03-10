@@ -89,9 +89,19 @@ void DJAudioPlayer::stop()
     transportSource.stop();
 }
 
-double DJAudioPlayer::getPositionRelative()
+double DJAudioPlayer::getPositionRelative() const
 {
     return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
+}
+
+double DJAudioPlayer::getPositionAbsolute() const
+{
+    return transportSource.getCurrentPosition();
+}
+
+double DJAudioPlayer::getLengthInSeconds() const
+{
+    return transportSource.getLengthInSeconds();
 }
 
 bool DJAudioPlayer::isPlaying() const

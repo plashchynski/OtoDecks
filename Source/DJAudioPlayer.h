@@ -45,7 +45,21 @@ public:
      *
      * @return a value between 0 and 1, where 0 is the beginning of the track and 1 is the end
      */
-    double getPositionRelative();
+    double getPositionRelative() const;
+
+    /**
+     * get the absolute position of the playhead
+     * 
+     * @return the position in seconds
+    */
+    double getPositionAbsolute() const;
+
+    /**
+     * get the length of the track
+     * 
+     * @return the length in seconds
+    */
+    double getLengthInSeconds() const;
 
     /**
      * Set the relative position of the playhead

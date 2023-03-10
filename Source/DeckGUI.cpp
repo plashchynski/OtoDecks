@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "DeckGUI.h"
+#include "Formatter.h"
 
 //==============================================================================
 DeckGUI::DeckGUI(DJAudioPlayer* _player,
@@ -16,9 +17,9 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
+    addAndMakeVisible(durationLabel);
 
     addAndMakeVisible(titleLabel);
-    addAndMakeVisible(artistLabel);
 
     addAndMakeVisible(waveformSlider);
 
@@ -60,29 +61,28 @@ void DeckGUI::resized()
 
     juce::Grid grid;
 
-    grid.templateRows = { Track(), Track(), Track(Fr(1)) };
-    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(Fr(1)) };
+    grid.templateRows = { Track(), Track(Fr(1)) };
+    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
         /**
-         * +-----------------+-----------------+------------+-------------------+-------------+
-         * | volumeFader     | speedFader      | loadButton | playControlButton | titleLabel  |
-         * +                 +                 +------------+-------------------+-------------+
-         * |                 |                 |            |                   | artistLabel |
-         * +                 +                 +------------+-------------------+-------------+
-         * |                 |                 | waveformSlider                               |
-         * +-----------------+-----------------+------------+---------------------------------+
+         * +-----------------+-----------------+------------+-------------------+---------------+-------------+
+         * | volumeFader     | speedFader      | loadButton | playControlButton | durationLabel | titleLabel  |
+         * +                 +                 +------------+-------------------+---------------+-------------+
+         * |                 |                 | waveformSlider                                               |
+         * +-----------------+-----------------+------------+-------------------------------------------------+
         */
         juce::GridItem(volumeFader).withWidth(50).withArea(1, 1, 4, 1),
         juce::GridItem(speedFader).withWidth(50).withArea(1, 2, 4, 2),
 
         juce::GridItem(loadButton).withSize(32, 32).withArea(1, 3).withMargin(juce::GridItem::Margin(5, 5, 5, 5)),
         juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 4).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
+        juce::GridItem(durationLabel).withWidth(50).withArea(1, 5),
+        
 
-        juce::GridItem(titleLabel).withArea(1, 5),
-        juce::GridItem(artistLabel).withHeight(40).withArea(2, 5),
+        juce::GridItem(titleLabel).withArea(1, 6),
 
-        juce::GridItem(waveformSlider).withArea(3, 3, 4, 6),
+        juce::GridItem(waveformSlider).withArea(2, 3, 2, 7),
     });
 
     grid.performLayout(getLocalBounds());
@@ -113,6 +113,7 @@ void DeckGUI::timerCallback()
 {
     if (player->isPlaying()) {
         waveformSlider.setValue(player->getPositionRelative());
+        durationLabel.setText(Formatter::formatTime(player->getLengthInSeconds() - player->getPositionAbsolute()), juce::dontSendNotification);
     }
 }
 
@@ -153,9 +154,6 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
     juce::String filePath = draggedItemInfo.getProperty("filePath");
-
-    titleLabel.setText(draggedItemInfo.getProperty("title"), juce::dontSendNotification);
-    artistLabel.setText(draggedItemInfo.getProperty("artist"), juce::dontSendNotification);
 
     juce::File file{filePath};
     loadFile(file);
@@ -199,9 +197,24 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 
 void DeckGUI::loadFile(juce::File file)
 {
-    std::cout << "Loading file: " << file.getFullPathName() << std::endl;
     juce::URL url{file};
     player->loadURL(url);
     waveformSlider.loadURL(url);
     playControlButton.setStatus(PlayControlButton::Status::Paused);
+
+    // Default values for the metadata
+    titleLabel.setText(file.getFileNameWithoutExtension() + " by " + "Unknown artist", juce::dontSendNotification);
+
+    // Trying to get the metadata from the file
+    std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor(file));
+    if (reader)
+    {
+        durationLabel.setText(Formatter::formatTime(reader->lengthInSamples / reader->sampleRate), juce::dontSendNotification);
+
+        auto metadata = reader->metadataValues;
+        if (metadata.size() > 0)
+        {
+            titleLabel.setText(metadata["title"] + " by " + metadata["artist"], juce::dontSendNotification);
+        }
+    }
 }

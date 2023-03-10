@@ -62,7 +62,7 @@ private:
     Fader speedFader{"Speed", "percent", 0.0, 3.0, 1.0};
 
     juce::Label titleLabel;
-    juce::Label artistLabel;
+    juce::Label durationLabel;
 
     juce::FileChooser fChooser{"Select a file..."};
 
