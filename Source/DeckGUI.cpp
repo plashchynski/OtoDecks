@@ -38,6 +38,13 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     speedSlider.setValue(1.0);
 
     volSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxAbove, true, 100, 20);
+
+
+    juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::loadbutton_png, BinaryData::loadbutton_pngSize);
+    loadButton.setImages(false, true, true,
+        loadButtonImg, 1.0f, juce::Colour(0x00000000),
+        loadButtonImg, 1.0f, juce::Colour(0x00000000),
+        loadButtonImg, 1.0f, juce::Colour(0x00000000));
 }
 
 DeckGUI::~DeckGUI()
@@ -62,15 +69,16 @@ void DeckGUI::resized()
     juce::Grid grid;
 
     grid.templateRows = { Track (Fr (1)), Track (Fr (1)), Track (Fr (3))  };
-    grid.templateColumns = { Track(), Track(), Track(Fr(1)), Track(Fr(1)) };
+    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
         juce::GridItem(speedSlider).withWidth(100).withArea(1, 1, 4, 1),
         juce::GridItem(volSlider).withWidth(100).withArea(1, 2, 4, 2),
-        juce::GridItem(playControlButton).withArea(1, 3),
-        juce::GridItem(titleLabel).withArea(1, 4),
-        juce::GridItem(artistLabel).withArea(2, 4),
-        juce::GridItem(waveformSlider).withArea(3, 3, 4, 5),
+        juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),
+        juce::GridItem(loadButton).withWidth(40).withArea(1, 4),
+        juce::GridItem(titleLabel).withArea(1, 5),
+        juce::GridItem(artistLabel).withArea(2, 5),
+        juce::GridItem(waveformSlider).withArea(3, 3, 4, 6),
     });
 
     grid.performLayout(getLocalBounds());

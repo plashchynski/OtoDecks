@@ -37,6 +37,7 @@ jucer_project_settings(
 jucer_project_files("OtoDecks/Assets"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  .         .         x         "Assets/load-button.png"
   .         .         x         "Assets/pause-button.png"
   .         .         x         "Assets/play-button.png"
 )
@@ -56,7 +57,6 @@ jucer_project_files("OtoDecks/Source"
   .         .         .         "Source/DeckGUI.h"
   x         .         .         "Source/DJAudioPlayer.cpp"
   .         .         .         "Source/DJAudioPlayer.h"
-  .         .         .         "Source/LibraryItem.h"
   x         .         .         "Source/Main.cpp"
   .         .         .         "Source/MainComponent.h"
   x         .         .         "Source/MainComponent.cpp"

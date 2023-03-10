@@ -55,7 +55,7 @@ public:
 private:
     PlayControlButton playControlButton;
 
-    juce::TextButton loadButton{"LOAD"};
+    juce::ImageButton loadButton{"Load"};
 
     juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
     juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
