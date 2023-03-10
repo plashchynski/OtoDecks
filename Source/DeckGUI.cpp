@@ -31,10 +31,12 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     loadButton.addListener(this);
 
     juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
-    loadButton.setImages(false, true, true,
-        loadButtonImg, 1.0f, juce::Colour(0x00000000),
-        loadButtonImg, 1.0f, juce::Colour(0x00000000),
-        loadButtonImg, 1.0f, juce::Colour(0x00000000));
+    loadButton.setImages(true, false, true,
+        loadButtonImg, 1.0f, juce::Colours::transparentBlack,
+        loadButtonImg, 0.7f, juce::Colours::transparentBlack,
+        loadButtonImg, 0.4f, juce::Colours::transparentBlack);
+    loadButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    loadButton.setTooltip("Load a file to the deck");
 }
 
 DeckGUI::~DeckGUI()
@@ -58,27 +60,28 @@ void DeckGUI::resized()
 
     juce::Grid grid;
 
-    grid.templateRows = { Track (Fr (1)), Track (Fr (1)), Track (Fr (3))  };
+    grid.templateRows = { Track(), Track(), Track(Fr(1)) };
     grid.templateColumns = { Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
         /**
-         * +-----------------+-----------------+------------+------------+
-         * | volumeFader     | speedFader      |            |            |
-         * +                 +                 +------------+------------+
-         * |                 |                 |            |            |
-         * +                 +                 +------------+------------+
-         * |                 |                 |            |            |
-         * +-----------------+-----------------+------------+------------+
+         * +-----------------+-----------------+------------+-------------------+-------------+
+         * | volumeFader     | speedFader      | loadButton | playControlButton | titleLabel  |
+         * +                 +                 +------------+-------------------+-------------+
+         * |                 |                 |            |                   | artistLabel |
+         * +                 +                 +------------+-------------------+-------------+
+         * |                 |                 | waveformSlider                               |
+         * +-----------------+-----------------+------------+---------------------------------+
         */
         juce::GridItem(volumeFader).withWidth(50).withArea(1, 1, 4, 1),
         juce::GridItem(speedFader).withWidth(50).withArea(1, 2, 4, 2),
 
+        juce::GridItem(loadButton).withSize(32, 32).withArea(1, 3).withMargin(juce::GridItem::Margin(5, 5, 5, 5)),
+        juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 4).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
 
-        juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),
-        juce::GridItem(loadButton).withWidth(40).withArea(1, 4),
         juce::GridItem(titleLabel).withArea(1, 5),
-        juce::GridItem(artistLabel).withArea(2, 5),
+        juce::GridItem(artistLabel).withHeight(40).withArea(2, 5),
+
         juce::GridItem(waveformSlider).withArea(3, 3, 4, 6),
     });
 
@@ -89,11 +92,11 @@ void DeckGUI::buttonClicked(juce::Button* button)
 {
     if (button == &loadButton)
     {
-        auto fileChooserFlags =
-        juce::FileBrowserComponent::canSelectFiles;
+        auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
         fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
         {
-            loadFile(chooser.getResult());
+            if (chooser.getResult().existsAsFile())
+                loadFile(chooser.getResult());
         });
     }
 }
@@ -196,6 +199,7 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 
 void DeckGUI::loadFile(juce::File file)
 {
+    std::cout << "Loading file: " << file.getFullPathName() << std::endl;
     juce::URL url{file};
     player->loadURL(url);
     waveformSlider.loadURL(url);

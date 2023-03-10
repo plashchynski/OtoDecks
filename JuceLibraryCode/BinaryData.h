@@ -9,13 +9,13 @@
 namespace BinaryData
 {
     extern const char*   ejectbutton_png;
-    const int            ejectbutton_pngSize = 11535;
+    const int            ejectbutton_pngSize = 755;
 
     extern const char*   pausebutton_png;
     const int            pausebutton_pngSize = 1343;
 
     extern const char*   playbutton_png;
-    const int            playbutton_pngSize = 884;
+    const int            playbutton_pngSize = 754;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 3;

@@ -4,11 +4,11 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="geIw2X" name="OtoDecks">
     <GROUP id="{BF58413F-06AB-2432-4100-95DFC7C75E6E}" name="Assets">
-      <FILE id="ZloQc7" name="eject-button.png" compile="0" resource="1"
+      <FILE id="rwpp8d" name="eject-button.png" compile="0" resource="1"
             file="Assets/eject-button.png"/>
-      <FILE id="cw9PZL" name="pause-button.png" compile="0" resource="1"
+      <FILE id="uqoUAn" name="pause-button.png" compile="0" resource="1"
             file="Assets/pause-button.png"/>
-      <FILE id="EOmvD8" name="play-button.png" compile="0" resource="1" file="Assets/play-button.png"/>
+      <FILE id="KxMJrL" name="play-button.png" compile="0" resource="1" file="Assets/play-button.png"/>
     </GROUP>
     <GROUP id="{6FB17DBA-1BCF-64BB-8BA5-D8741FB27D13}" name="Source">
       <FILE id="EpVyQi" name="Fader.cpp" compile="1" resource="0" file="Source/Fader.cpp"/>
