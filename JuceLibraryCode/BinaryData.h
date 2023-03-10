@@ -8,8 +8,8 @@
 
 namespace BinaryData
 {
-    extern const char*   loadbutton_png;
-    const int            loadbutton_pngSize = 1170;
+    extern const char*   ejectbutton_png;
+    const int            ejectbutton_pngSize = 11535;
 
     extern const char*   pausebutton_png;
     const int            pausebutton_pngSize = 1343;

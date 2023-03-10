@@ -57,4 +57,4 @@ git archive --format=zip  --output=../OtoDecks_v1.zip main .
 * [3] [FRUT](https://github.com/McMartin/FRUT)
 * [4] [CMake](https://cmake.org/)
 * [5] [Icons](https://www.flaticon.com/packs/music-228) made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](http://www.flaticon.com/)
-* [6] [Icons](https://www.flaticon.com/packs/music-46) made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](http://www.flaticon.com/)
+* [6] [Icons](https://www.flaticon.com/packs/video-19) made by [Pixel perfect](https://www.flaticon.com/authors/pixel-perfect) from [www.flaticon.com](http://www.flaticon.com/)

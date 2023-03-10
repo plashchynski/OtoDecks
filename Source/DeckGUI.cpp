@@ -40,7 +40,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxAbove, true, 100, 20);
 
 
-    juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::loadbutton_png, BinaryData::loadbutton_pngSize);
+    juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
     loadButton.setImages(false, true, true,
         loadButtonImg, 1.0f, juce::Colour(0x00000000),
         loadButtonImg, 1.0f, juce::Colour(0x00000000),
