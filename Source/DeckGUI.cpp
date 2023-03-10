@@ -11,11 +11,11 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
                formatManager(_formatManager),
                waveformSlider(_formatManager, cacheToUse)
 {
-    addAndMakeVisible(loadButton);
-    addAndMakeVisible(playControlButton);
-
     addAndMakeVisible(volumeFader);
     addAndMakeVisible(speedFader);
+
+    addAndMakeVisible(loadButton);
+    addAndMakeVisible(playControlButton);
 
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(artistLabel);
@@ -24,13 +24,11 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     volumeFader.addChangeListener(this);
     speedFader.addChangeListener(this);
-
-    waveformSlider.addListener(this);
-
-    loadButton.addListener(this);
-
     playControlButton.addChangeListener(this);
     player->addChangeListener(this);
+
+    waveformSlider.addListener(this);
+    loadButton.addListener(this);
 
     juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
     loadButton.setImages(false, true, true,
@@ -73,8 +71,8 @@ void DeckGUI::resized()
          * |                 |                 |            |            |
          * +-----------------+-----------------+------------+------------+
         */
-        juce::GridItem(volumeFader).withWidth(100).withArea(1, 1, 4, 1),
-        juce::GridItem(speedFader).withWidth(100).withArea(1, 2, 4, 2),
+        juce::GridItem(volumeFader).withWidth(50).withArea(1, 1, 4, 1),
+        juce::GridItem(speedFader).withWidth(50).withArea(1, 2, 4, 2),
 
 
         juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),

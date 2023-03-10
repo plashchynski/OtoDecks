@@ -12,6 +12,8 @@ WaveformSlider::WaveformSlider( juce::AudioFormatManager & 	formatManagerToUse,
     setRange(0.0, 1.0);
     setValue(0.0);
     audioThumb.addChangeListener(this);
+
+    
 }
 
 WaveformSlider::~WaveformSlider()
@@ -26,6 +28,7 @@ void WaveformSlider::loadURL(juce::URL audioURL)
     fileLoaded  = audioThumb.setSource(new juce::URLInputSource(audioURL));
     if (fileLoaded)
     {
+        setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
         setValue(0.0f);
         repaint();
     }

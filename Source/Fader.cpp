@@ -8,9 +8,14 @@ Fader::Fader(juce::String name, juce::String _unit, double _minValue, double _ma
     addAndMakeVisible(slider);
 
     label.setText(name, juce::dontSendNotification);
+    label.setJustificationType(juce::Justification::centred);
+    valueLabel.setJustificationType(juce::Justification::centred);
+
     slider.addListener(this);
     slider.setRange(minValue, maxValue);
     slider.setValue(defaultValue);
+
+    slider.setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
 }
 
 Fader::~Fader()
