@@ -59,10 +59,12 @@ private:
 
 
     juce::Label volLabel;
-    juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
+    juce::Label volValueLabel;
+    juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
 
     juce::Label speedLabel;
-    juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::TextBoxAbove};
+    juce::Label speedValueLabel;
+    juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
 
     juce::Label titleLabel;
     juce::Label artistLabel;

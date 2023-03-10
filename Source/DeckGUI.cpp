@@ -14,24 +14,22 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
 
-    addAndMakeVisible(volSlider);
-    addAndMakeVisible(speedSlider);
-
     addAndMakeVisible(volLabel);
-    addAndMakeVisible(speedLabel);
+    addAndMakeVisible(volValueLabel);
+    addAndMakeVisible(volSlider);
 
-    volLabel.setText("Volume", juce::dontSendNotification);
-    speedLabel.setText("Speed", juce::dontSendNotification);
+    addAndMakeVisible(speedLabel);
+    addAndMakeVisible(speedValueLabel);
+    addAndMakeVisible(speedSlider);
 
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(artistLabel);
 
     addAndMakeVisible(waveformSlider);
 
-    loadButton.addListener(this);
-
-    playControlButton.addChangeListener(this);
-    player->addChangeListener(this);
+    // Set up the sliders and its labels
+    volLabel.setText("Volume", juce::dontSendNotification);
+    speedLabel.setText("Speed", juce::dontSendNotification);
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
@@ -43,8 +41,12 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     speedSlider.setRange(0, 3.0);
     speedSlider.setValue(1.0);
 
-    volSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxAbove, true, 100, 20);
 
+
+    loadButton.addListener(this);
+
+    playControlButton.addChangeListener(this);
+    player->addChangeListener(this);
 
     juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
     loadButton.setImages(false, true, true,
@@ -78,10 +80,24 @@ void DeckGUI::resized()
     grid.templateColumns = { Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
+        /**
+         * +-----------------+-----------------+------------+------------+
+         * | speedLabel      | volLabel        |            |            |
+         * +-----------------+-----------------+------------+------------+
+         * | speedValueLabel | volValueLabel   |            |            |
+         * +-----------------+-----------------+------------+------------+
+         * | speedSlider     | volSlider       |            |            |
+         * +-----------------+-----------------+------------+------------+
+        */
         juce::GridItem(speedLabel).withArea(1, 1),
         juce::GridItem(volLabel).withArea(1, 2),
-        juce::GridItem(speedSlider).withWidth(100).withArea(2, 1, 4, 1),
-        juce::GridItem(volSlider).withWidth(100).withArea(2, 2, 4, 2),
+
+        juce::GridItem(speedValueLabel).withArea(2, 1),
+        juce::GridItem(volValueLabel).withArea(2, 2),
+
+        juce::GridItem(speedSlider).withWidth(100).withArea(3, 1, 4, 1),
+        juce::GridItem(volSlider).withWidth(100).withArea(3, 2, 4, 2),
+
         juce::GridItem(playControlButton).withWidth(40).withArea(1, 3),
         juce::GridItem(loadButton).withWidth(40).withArea(1, 4),
         juce::GridItem(titleLabel).withArea(1, 5),
@@ -110,11 +126,13 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
     if (slider == &volSlider)
     {
         player->setGain(slider->getValue());
+        volValueLabel.setText(juce::String::formatted("%d%%", (int)(slider->getValue() * 100)), juce::dontSendNotification);
     }
 
     if (slider == &speedSlider)
     {
         player->setSpeed(slider->getValue());
+        speedValueLabel.setText(juce::String::formatted("%d%%", (int)(slider->getValue() * 100)), juce::dontSendNotification);
     }
 
     if (slider == &waveformSlider)
