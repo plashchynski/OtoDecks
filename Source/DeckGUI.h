@@ -59,14 +59,7 @@ private:
     juce::ImageButton loadButton{"Load"};
 
     Fader volumeFader{"Volume", "percent", 0.0, 1.0, 1.0};
-
-    // juce::Label volLabel;
-    // juce::Label volValueLabel;
-    // juce::Slider volSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
-
-    juce::Label speedLabel;
-    juce::Label speedValueLabel;
-    juce::Slider speedSlider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
+    Fader speedFader{"Speed", "percent", 0.0, 3.0, 1.0};
 
     juce::Label titleLabel;
     juce::Label artistLabel;

@@ -43,8 +43,9 @@ void Fader::sliderValueChanged(juce::Slider* slider)
     }
     else
     {
-        valueLabel.setText(juce::String::formatted("%d " + unit, (int)(slider->getValue() * 100)), juce::dontSendNotification);
+        valueLabel.setText(juce::String::formatted("%d " + unit, (int)(slider->getValue())), juce::dontSendNotification);
     }
+
     sendChangeMessage();
 }
 
