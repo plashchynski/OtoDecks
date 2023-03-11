@@ -40,9 +40,6 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
-    for (auto deck : decks)
-        removeDeck(deck);
-
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
 }
@@ -134,7 +131,7 @@ void MainComponent::resized()
 void MainComponent::addDeck()
 {
     Deck *deck = new Deck(formatManager, thumbCache);
-    decks.push_back(deck);
+    decks.add(deck);
 
     addAndMakeVisible(deck);
     deck->addChangeListener(this);
@@ -165,14 +162,10 @@ void MainComponent::buttonClicked(juce::Button *button)
 
 void MainComponent::removeDeck(Deck *deck)
 {
-    // Find the index of the deck and remove it from the vector
-    int index = std::find(decks.begin(), decks.end(), deck) - decks.begin();
-    decks.erase(decks.begin() + index);
-
     // Remove the deck
     removeChildComponent(deck);
     mixerSource.removeInputSource(&deck->player);
-    delete deck;
+    decks.removeObject(deck);
 
     resized();
 }

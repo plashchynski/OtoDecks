@@ -40,7 +40,7 @@ private:
     void addDeck();
     void removeDeck(Deck *deck);
 
-    std::vector<Deck*> decks;
+    juce::OwnedArray<Deck> decks;
 
     juce::MixerAudioSource mixerSource;
 

@@ -51,9 +51,11 @@ You can add tracks to the library and then drag and drop them into the deck to s
 
 ### R1B: can play two or more tracks
 
-To play a track it should be loaded into a deck. The deck is implemented in the `Deck` class. Every deck has its own player implemented in ``.
+To play a track it should be loaded into a deck. The application starts with two decks, but a user can add as many decks as needed. Actually, the number of simultaneously playing tracks are limited only by capacity of the computer. There's a button to add a new deck and buttons to remove decks:
 
-[[Screenshot with two tracks playing]]
+[[Screenshot with three tracks playing]]
+
+The deck is implemented in the `Deck` class. Every deck has its own playing backend implemented in `Player` class that encapsulate all audio-related complexity. The `MainComponent` is responsible for storing decks and managing them. The list of decks is stored in the `MainComponent` using a `juce::OwnedArray` class to automatically manage the lifetime of the decks. There are `addDeck` and the `removeDeck` methods in `MainComponent` to add and remove decks on user request.
 
 ### R1C: can mix the tracks by varying each of their volumes
 
