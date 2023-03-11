@@ -18,6 +18,7 @@ public:
     void sliderValueChanged(juce::Slider *slider) override;
 
     double getValue() const;
+    void setValue(double value);
 
 private:
     Type type;

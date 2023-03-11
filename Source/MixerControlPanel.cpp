@@ -6,6 +6,8 @@ MixerControlPanel::MixerControlPanel()
     addAndMakeVisible(masterVolumeFader);
 
     masterVolumeFader.addChangeListener(this);
+
+    masterVolumeFader.setValue(juce::SystemAudioVolume::getGain());
 }
 
 void MixerControlPanel::paint (juce::Graphics& g)

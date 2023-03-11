@@ -103,3 +103,8 @@ double Fader::getValue() const
 {
     return slider.getValue();
 }
+
+void Fader::setValue(double value)
+{
+    slider.setValue(value);
+}
