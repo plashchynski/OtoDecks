@@ -53,7 +53,7 @@ void DeckGUI::resized()
 
     juce::Grid grid;
 
-    grid.templateRows = { Track(), Track(Fr(1)) };
+    grid.templateRows = { Track(), Track(Fr(2)) };
     grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
@@ -64,7 +64,7 @@ void DeckGUI::resized()
          * |     |                 |                 | waveformSlider                                               |
          * +-----+-----------------+-----------------+------------+-------------------------------------------------+
         */
-        juce::GridItem(removeButton).withWidth(50).withHeight(50).withArea(1, 1).withMargin(10),
+        juce::GridItem(removeButton).withWidth(50).withArea(1, 1).withMargin(juce::GridItem::Margin(5, 10, 5, 10)),
         juce::GridItem(volumeFader).withWidth(50).withArea(1, 2, 4, 2),
         juce::GridItem(speedFader).withWidth(50).withArea(1, 3, 4, 3),
 

@@ -152,9 +152,7 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
     {
         DeckGUI *deck = dynamic_cast<DeckGUI*>(source);
         if (deck->toBeRemoved)
-        {
             removeDeck(deck);
-        }
     }
 }
 
