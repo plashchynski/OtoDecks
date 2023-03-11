@@ -4,34 +4,33 @@
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include "LibraryComponent.h"
-#include "MixerControlPanel.h"
+#include "Fader.h"
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
-class MainComponent  : public juce::AudioAppComponent,
-                       public juce::DragAndDropContainer
+class MainComponent :   public juce::AudioAppComponent,
+                        public juce::DragAndDropContainer,
+                        public juce::ChangeListener,
+                        public juce::Button::Listener
 {
 public:
-    //==============================================================================
     MainComponent();
     ~MainComponent() override;
 
-    //==============================================================================
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
 
-    //==============================================================================
     void paint (juce::Graphics& g) override;
     void resized() override;
 
-private:
-    //==============================================================================
-    // Your private member variables go here...
+    void addDeck();
 
+    // Implements juce::ChangeListener
+    void changeListenerCallback(juce::ChangeBroadcaster *source) override;
+
+    // Implements juce::Button::Listener
+    void buttonClicked(juce::Button *button) override;
+
+private:
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
@@ -40,7 +39,8 @@ private:
 
     juce::MixerAudioSource mixerSource;
 
-    MixerControlPanel mixerControlPanel;
+    juce::ImageButton addDeckButton;
+    Fader masterVolumeFader{"Master Volume", Fader::Type::Horizontal, "percent", 0, 1, 1};
 
     LibraryComponent libraryComponent{formatManager};
 

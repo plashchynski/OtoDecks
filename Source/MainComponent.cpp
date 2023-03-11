@@ -4,9 +4,10 @@
 
 MainComponent::MainComponent()
 {
-    // Make sure you set the size of the component after
-    // you add any child components.
     setSize (800, 600);
+
+    addAndMakeVisible(addDeckButton);
+    addAndMakeVisible(masterVolumeFader);
 
     int numPlayers = 2;
     for (int i = 0; i < numPlayers; i++)
@@ -31,12 +32,24 @@ MainComponent::MainComponent()
 
     // This is required to make tooltips work in the components
     addAndMakeVisible(tooltipWindow);
-    addAndMakeVisible(mixerControlPanel);
     addAndMakeVisible(libraryComponent);
 
     libraryComponent.loadLibrary();
 
     formatManager.registerBasicFormats();
+
+    masterVolumeFader.addChangeListener(this);
+
+    // Configure the add deck button appearance and behaviour
+    juce::Image addDeckButtonImg = juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize);
+    addDeckButton.setImages(true, false, true,
+        addDeckButtonImg, 1.0f, juce::Colours::transparentBlack,
+        addDeckButtonImg, 0.7f, juce::Colours::transparentBlack,
+        addDeckButtonImg, 0.4f, juce::Colours::transparentBlack);
+
+    addDeckButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
+    addDeckButton.setTooltip("Add an additional deck");
+    addDeckButton.addListener(this);
 }
 
 MainComponent::~MainComponent()
@@ -87,10 +100,11 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::resized()
 {
     /**
-     * The layout is:
+     * 
+     * The layout of mainFb is:
      *
      * +-------------------+
-     * | mixerControlPanel | height is fixed to 70px and cannot grow or shrink
+     * | mixerControlsFb   | height is fixed to 70px and cannot grow or shrink
      * +-------------------+
      * | Deck 1            | height is fixed to 150px and cannot grow or shrink
      * +-------------------+
@@ -100,16 +114,54 @@ void MainComponent::resized()
      * |                   |
      * |                   |
      * +-------------------+
+     * 
+     * 
+     * The layout of mixerControlsFb is:
+     * 
+     * +---------------+-------------------+
+     * | addDeckButton | masterVolumeFader |
+     * +---------------+-------------------+
+     * 
     */
-    juce::FlexBox fb;
-    fb.flexDirection = juce::FlexBox::Direction::column;
 
-    fb.items.add(juce::FlexItem(mixerControlPanel).withMinHeight(70.0f).withFlex(0, 0));
+    juce::FlexBox mixerControlsFb;
+    mixerControlsFb.flexDirection = juce::FlexBox::Direction::row;
+    mixerControlsFb.items.add(juce::FlexItem(addDeckButton).withMargin(10).withMinWidth(50.0f).withFlex(0, 0));
+    mixerControlsFb.items.add(juce::FlexItem(masterVolumeFader).withMinWidth(150.0f).withFlex(0, 0));
+
+    juce::FlexBox mainFb;
+    mainFb.flexDirection = juce::FlexBox::Direction::column;
+
+    mainFb.items.add(juce::FlexItem(mixerControlsFb).withMinHeight(70.0f).withFlex(0, 0));
     for (auto deck : decks)
     {
-        fb.items.add(juce::FlexItem(*deck).withMinHeight(150.0f).withFlex(0, 0));
+        mainFb.items.add(juce::FlexItem(*deck).withMinHeight(150.0f).withFlex(0, 0));
     }
-    fb.items.add(juce::FlexItem(libraryComponent).withMinHeight(300.0f).withFlex(2, 2));
+    mainFb.items.add(juce::FlexItem(libraryComponent).withMinHeight(300.0f).withFlex(2, 2));
 
-    fb.performLayout(getLocalBounds().toFloat());
+    mainFb.performLayout(getLocalBounds().toFloat());
+}
+
+void MainComponent::addDeck()
+{
+    players.push_back(new DJAudioPlayer(formatManager));
+    decks.push_back(new DeckGUI(players.back(), formatManager, thumbCache));
+    addAndMakeVisible(decks.back());
+    resized();
+}
+
+void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
+{
+    if (source == &masterVolumeFader)
+    {
+        juce::SystemAudioVolume::setGain(masterVolumeFader.getValue());
+    }
+}
+
+void MainComponent::buttonClicked(juce::Button *button)
+{
+    if (button == &addDeckButton)
+    {
+        addDeck();
+    }
 }

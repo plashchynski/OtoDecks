@@ -40,13 +40,13 @@ jucer_project_files("OtoDecks/Assets"
   .         .         x         "Assets/eject-button.png"
   .         .         x         "Assets/pause-button.png"
   .         .         x         "Assets/play-button.png"
+  .         .         x         "Assets/plus.png"
+  .         .         x         "Assets/remove.png"
 )
 
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
-  x         .         .         "Source/MixerControlPanel.cpp"
-  .         .         .         "Source/MixerControlPanel.h"
   x         .         .         "Source/Fader.cpp"
   .         .         .         "Source/Fader.h"
   x         .         .         "Source/PlayControlButton.cpp"

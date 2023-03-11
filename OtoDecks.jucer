@@ -9,12 +9,10 @@
       <FILE id="uqoUAn" name="pause-button.png" compile="0" resource="1"
             file="Assets/pause-button.png"/>
       <FILE id="KxMJrL" name="play-button.png" compile="0" resource="1" file="Assets/play-button.png"/>
+      <FILE id="ntdOPf" name="plus.png" compile="0" resource="1" file="Assets/plus.png"/>
+      <FILE id="LFKbbK" name="remove.png" compile="0" resource="1" file="Assets/remove.png"/>
     </GROUP>
     <GROUP id="{6FB17DBA-1BCF-64BB-8BA5-D8741FB27D13}" name="Source">
-      <FILE id="cNWAnB" name="MixerControlPanel.cpp" compile="1" resource="0"
-            file="Source/MixerControlPanel.cpp"/>
-      <FILE id="k8ltq2" name="MixerControlPanel.h" compile="0" resource="0"
-            file="Source/MixerControlPanel.h"/>
       <FILE id="EpVyQi" name="Fader.cpp" compile="1" resource="0" file="Source/Fader.cpp"/>
       <FILE id="wJ9PNW" name="Fader.h" compile="0" resource="0" file="Source/Fader.h"/>
       <FILE id="ZYo2eZ" name="PlayControlButton.cpp" compile="1" resource="0"
