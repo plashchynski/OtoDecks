@@ -23,8 +23,6 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
 
-    void addDeck();
-
     // Implements juce::ChangeListener
     void changeListenerCallback(juce::ChangeBroadcaster *source) override;
 
@@ -32,12 +30,15 @@ public:
     void buttonClicked(juce::Button *button) override;
 
 private:
+    void addDeck();
+    void removeDeck(int index);
+
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
     std::vector<DJAudioPlayer*> players;
     std::vector<DeckGUI*> decks;
-    std::vector<juce::ImageButton*> removeDeckButtons;
+    std::vector<ControlButton*> removeDeckButtons;
 
     juce::MixerAudioSource mixerSource;
 
@@ -49,7 +50,6 @@ private:
     juce::Image removeDeckButtonImg = juce::ImageCache::getFromMemory(BinaryData::remove_png, BinaryData::remove_pngSize);
 
     Fader masterVolumeFader{"Master Volume", Fader::Type::Horizontal, "percent", 0, 1, 1};
-    
 
     LibraryComponent libraryComponent{formatManager};
 

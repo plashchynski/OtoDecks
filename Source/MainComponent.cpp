@@ -9,8 +9,8 @@ MainComponent::MainComponent()
     addAndMakeVisible(addDeckButton);
     addAndMakeVisible(masterVolumeFader);
 
-    int numPlayers = 2;
-    for (int i = 0; i < numPlayers; i++)
+    int numDecks = 2;
+    for (int i = 0; i < numDecks; i++)
         addDeck();
 
     // Some platforms require permissions to open input channels so request that here
@@ -45,7 +45,7 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     for (auto player : players)
     {
@@ -142,9 +142,11 @@ void MainComponent::addDeck()
     addAndMakeVisible(decks.back());
 
     ControlButton *removeDeckButton = new ControlButton(removeDeckButtonImg, "Remove this deck");
-    removeDeckButton->addListener(this);
-    removeDeckButtons.push_back(removeDeckButton);
+
     addAndMakeVisible(removeDeckButton);
+    removeDeckButton->addListener(this);
+
+    removeDeckButtons.push_back(removeDeckButton);
 
     resized();
 }
@@ -159,4 +161,35 @@ void MainComponent::buttonClicked(juce::Button *button)
 {
     if (button == &addDeckButton)
         addDeck();
+    // Find if the clicked button is among the removeDeckButtons
+    else if (std::find(removeDeckButtons.begin(), removeDeckButtons.end(), button) != removeDeckButtons.end())
+    {
+        int index = std::distance(removeDeckButtons.begin(), std::find(removeDeckButtons.begin(), removeDeckButtons.end(), button));
+        removeDeck(index);
+
+        resized();
+    }
+}
+
+void MainComponent::removeDeck(int index)
+{
+    // Remove the deck
+    DeckGUI *deck = decks[index];
+    removeChildComponent(deck);
+    decks.erase(decks.begin() + index);
+    delete deck;
+
+    // Remove the removeDeckButton
+    ControlButton *removeDeckButton = removeDeckButtons[index];
+    removeChildComponent(removeDeckButton);
+    removeDeckButtons.erase(removeDeckButtons.begin() + index);
+    delete removeDeckButtons[index];
+
+    // Stop and delete the player
+    DJAudioPlayer *player = players[index];
+    player->stop();
+    mixerSource.removeInputSource(player);
+    players.erase(players.begin() + index);
+    player->releaseResources();
+    delete player;
 }
