@@ -5,6 +5,7 @@
 #include "DeckGUI.h"
 #include "LibraryComponent.h"
 #include "Fader.h"
+#include "ControlButton.h"
 
 class MainComponent :   public juce::AudioAppComponent,
                         public juce::DragAndDropContainer,
@@ -36,11 +37,19 @@ private:
 
     std::vector<DJAudioPlayer*> players;
     std::vector<DeckGUI*> decks;
+    std::vector<juce::ImageButton*> removeDeckButtons;
 
     juce::MixerAudioSource mixerSource;
 
-    juce::ImageButton addDeckButton;
+    ControlButton addDeckButton{
+        juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize),
+        "Add an additional deck"
+    };
+
+    juce::Image removeDeckButtonImg = juce::ImageCache::getFromMemory(BinaryData::remove_png, BinaryData::remove_pngSize);
+
     Fader masterVolumeFader{"Master Volume", Fader::Type::Horizontal, "percent", 0, 1, 1};
+    
 
     LibraryComponent libraryComponent{formatManager};
 

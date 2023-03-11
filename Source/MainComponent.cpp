@@ -11,11 +11,7 @@ MainComponent::MainComponent()
 
     int numPlayers = 2;
     for (int i = 0; i < numPlayers; i++)
-    {
-        players.push_back(new DJAudioPlayer(formatManager));
-        decks.push_back(new DeckGUI(players[i], formatManager, thumbCache));
-        addAndMakeVisible(decks[i]);
-    }
+        addDeck();
 
     // Some platforms require permissions to open input channels so request that here
     if (juce::RuntimePermissions::isRequired (juce::RuntimePermissions::recordAudio)
@@ -40,15 +36,6 @@ MainComponent::MainComponent()
 
     masterVolumeFader.addChangeListener(this);
 
-    // Configure the add deck button appearance and behaviour
-    juce::Image addDeckButtonImg = juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize);
-    addDeckButton.setImages(true, false, true,
-        addDeckButtonImg, 1.0f, juce::Colours::transparentBlack,
-        addDeckButtonImg, 0.7f, juce::Colours::transparentBlack,
-        addDeckButtonImg, 0.4f, juce::Colours::transparentBlack);
-
-    addDeckButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    addDeckButton.setTooltip("Add an additional deck");
     addDeckButton.addListener(this);
 }
 
@@ -101,26 +88,27 @@ void MainComponent::resized()
 {
     /**
      * 
+     * The layout of mixerControlsFb is:
+     * 
+     * +-----+-------------------+
+     * | (+) | masterVolumeFader |
+     * +-----+-------------------+
+     * 
+     * 
      * The layout of mainFb is:
      *
      * +-------------------+
      * | mixerControlsFb   | height is fixed to 70px and cannot grow or shrink
-     * +-------------------+
-     * | Deck 1            | height is fixed to 150px and cannot grow or shrink
-     * +-------------------+
-     * | Deck 2            |
-     * +-------------------+
+     * +-----+-------------+
+     * | (-) | Deck 1      | height is fixed to 150px and cannot grow or shrink
+     * +-----+-------------+
+     * | (-) | Deck 2      |
+     * +-----+-------------+
      * | Library           | height is not fixed and can grow or shrink
      * |                   |
      * |                   |
      * +-------------------+
      * 
-     * 
-     * The layout of mixerControlsFb is:
-     * 
-     * +---------------+-------------------+
-     * | addDeckButton | masterVolumeFader |
-     * +---------------+-------------------+
      * 
     */
 
@@ -133,9 +121,14 @@ void MainComponent::resized()
     mainFb.flexDirection = juce::FlexBox::Direction::column;
 
     mainFb.items.add(juce::FlexItem(mixerControlsFb).withMinHeight(70.0f).withFlex(0, 0));
-    for (auto deck : decks)
+    for (int i = 0; i < decks.size(); i++)
     {
-        mainFb.items.add(juce::FlexItem(*deck).withMinHeight(150.0f).withFlex(0, 0));
+        juce::FlexBox *deckFb = new juce::FlexBox();
+        deckFb->flexDirection = juce::FlexBox::Direction::row;
+        deckFb->items.add(juce::FlexItem(*removeDeckButtons[i]).withMargin(10).withMinWidth(50.0f).withFlex(0, 0));
+        deckFb->items.add(juce::FlexItem(*decks[i]).withFlex(1, 1));
+
+        mainFb.items.add(juce::FlexItem(*deckFb).withMinHeight(150.0f).withFlex(0, 0));
     }
     mainFb.items.add(juce::FlexItem(libraryComponent).withMinHeight(300.0f).withFlex(2, 2));
 
@@ -147,21 +140,23 @@ void MainComponent::addDeck()
     players.push_back(new DJAudioPlayer(formatManager));
     decks.push_back(new DeckGUI(players.back(), formatManager, thumbCache));
     addAndMakeVisible(decks.back());
+
+    ControlButton *removeDeckButton = new ControlButton(removeDeckButtonImg, "Remove this deck");
+    removeDeckButton->addListener(this);
+    removeDeckButtons.push_back(removeDeckButton);
+    addAndMakeVisible(removeDeckButton);
+
     resized();
 }
 
 void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &masterVolumeFader)
-    {
         juce::SystemAudioVolume::setGain(masterVolumeFader.getValue());
-    }
 }
 
 void MainComponent::buttonClicked(juce::Button *button)
 {
     if (button == &addDeckButton)
-    {
         addDeck();
-    }
 }

@@ -47,6 +47,8 @@ jucer_project_files("OtoDecks/Assets"
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  x         .         .         "Source/ControlButton.cpp"
+  .         .         .         "Source/ControlButton.h"
   x         .         .         "Source/Fader.cpp"
   .         .         .         "Source/Fader.h"
   x         .         .         "Source/PlayControlButton.cpp"
