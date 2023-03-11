@@ -40,7 +40,6 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
-//==============================================================================
 void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
@@ -50,7 +49,8 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
     mixerSource.addInputSource(&player1, false);
     mixerSource.addInputSource(&player2, false);
- }
+}
+
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
     mixerSource.getNextAudioBlock(bufferToFill);
@@ -67,26 +67,23 @@ void MainComponent::releaseResources()
     mixerSource.releaseResources();
 }
 
-//==============================================================================
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    // You can add your drawing code here!
 }
 
 void MainComponent::resized()
 {
     /**
      * The layout is:
-     * 
+     *
      * +-------------------+
-     * | Deck 1            | height is fixed to 150px and cannot be grow or shrink
+     * | Deck 1            | height is fixed to 150px and cannot grow or shrink
      * +-------------------+
      * | Deck 2            |
      * +-------------------+
-     * | mixerControlPanel |
+     * | mixerControlPanel | height is fixed to 70px and cannot grow or shrink
      * +-------------------+
      * | Library           | height is not fixed and can grow or shrink
      * |                   |
