@@ -5,6 +5,7 @@
 #include "WaveformSlider.h"
 #include "PlayControlButton.h"
 #include "Fader.h"
+#include "ControlButton.h"
 
 //==============================================================================
 /*
@@ -56,7 +57,10 @@ public:
 private:
     PlayControlButton playControlButton;
 
-    juce::ImageButton loadButton{"Load"};
+    ControlButton loadButton{
+        juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize),
+        "Load a file to the deck"
+    };
 
     Fader volumeFader{"Volume", Fader::Type::Vertical, "percent", 0.0, 1.0, 1.0};
     Fader speedFader{"Speed", Fader::Type::Vertical, "percent", 0.0, 3.0, 1.0};

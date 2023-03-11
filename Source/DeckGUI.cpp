@@ -30,16 +30,6 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     waveformSlider.addListener(this);
     loadButton.addListener(this);
-
-    // Configure the load button appearance and behaviour
-    juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
-    loadButton.setImages(true, false, true,
-        loadButtonImg, 1.0f, juce::Colours::transparentBlack,
-        loadButtonImg, 0.7f, juce::Colours::transparentBlack,
-        loadButtonImg, 0.4f, juce::Colours::transparentBlack);
-
-    loadButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
-    loadButton.setTooltip("Load a file to the deck");
 }
 
 DeckGUI::~DeckGUI()
