@@ -10,20 +10,20 @@
 //==============================================================================
 /*
 */
-class DeckGUI   :   public juce::Component,
-                    public juce::Button::Listener,
-                    public juce::Slider::Listener,
-                    public juce::FileDragAndDropTarget,
-                    public juce::DragAndDropTarget,
-                    public juce::TextEditor::Listener,
-                    public juce::Timer,
-                    public juce::ChangeListener,
-                    public juce::ChangeBroadcaster
+class Deck   :  public juce::Component,
+                public juce::Button::Listener,
+                public juce::Slider::Listener,
+                public juce::FileDragAndDropTarget,
+                public juce::DragAndDropTarget,
+                public juce::TextEditor::Listener,
+                public juce::Timer,
+                public juce::ChangeListener,
+                public juce::ChangeBroadcaster
 {
 public:
-    DeckGUI(juce::AudioFormatManager& _formatManager,
+    Deck(juce::AudioFormatManager& _formatManager,
             juce::AudioThumbnailCache& cacheToUse);
-    ~DeckGUI();
+    ~Deck();
 
     void paint(juce::Graphics&) override;
     void resized() override;
@@ -82,5 +82,5 @@ private:
     juce::AudioFormatManager& formatManager;
     juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DeckGUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Deck)
 };

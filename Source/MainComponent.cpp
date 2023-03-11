@@ -133,7 +133,7 @@ void MainComponent::resized()
 
 void MainComponent::addDeck()
 {
-    DeckGUI *deck = new DeckGUI(formatManager, thumbCache);
+    Deck *deck = new Deck(formatManager, thumbCache);
     decks.push_back(deck);
 
     addAndMakeVisible(deck);
@@ -149,9 +149,9 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
     if (source == &masterVolumeFader)
         juce::SystemAudioVolume::setGain(masterVolumeFader.getValue());
 
-    else if (typeid(*source) == typeid(DeckGUI))
+    else if (typeid(*source) == typeid(Deck))
     {
-        DeckGUI *deck = dynamic_cast<DeckGUI*>(source);
+        Deck *deck = dynamic_cast<Deck *>(source);
         if (deck->toBeRemoved)
             removeDeck(deck);
     }
@@ -163,7 +163,7 @@ void MainComponent::buttonClicked(juce::Button *button)
         addDeck();
 }
 
-void MainComponent::removeDeck(DeckGUI *deck)
+void MainComponent::removeDeck(Deck *deck)
 {
     // Find the index of the deck and remove it from the vector
     int index = std::find(decks.begin(), decks.end(), deck) - decks.begin();

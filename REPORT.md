@@ -31,7 +31,7 @@
 There are three ways to load audio files into the audio players:
 1. Drag and drop files from the file explorer into the deck.
 
-This feature is implemented by overriding the `isInterestedInFileDrag` and `filesDropped` methods of `juce::FileDragAndDropTarget` in the `DeckGUI` class. The `isInterestedInFileDrag` method is checking if a dragged file has a valid audio file extension supported by the global `AudioFormatManager` instance. The `filesDropped` method is called when a file is dropped into the deck, calls the `Deck::loadFile` method to load the file into the deck. The `Deck::loadFile` calls `player->loadURL` to load the file into the player. The `DJAudioPlayer::loadURL` raises a custom exception `UnsupportedFormatError` if it fails to load the file into the player. The exception is caught in the `Deck::loadFile` method and an alert message is shown to the user:
+This feature is implemented by overriding the `isInterestedInFileDrag` and `filesDropped` methods of `juce::FileDragAndDropTarget` in the `Deck` class. The `isInterestedInFileDrag` method is checking if a dragged file has a valid audio file extension supported by the global `AudioFormatManager` instance. The `filesDropped` method is called when a file is dropped into the deck, calls the `Deck::loadFile` method to load the file into the deck. The `Deck::loadFile` calls `player->loadURL` to load the file into the player. The `DJAudioPlayer::loadURL` raises a custom exception `UnsupportedFormatError` if it fails to load the file into the player. The exception is caught in the `Deck::loadFile` method and an alert message is shown to the user:
 
 [[Screenshot with an error message]]
 
@@ -45,11 +45,13 @@ It uses the `formatManager.getWildcardForAllFormats()` to get a wildcard string 
 
 3. Drag and drop library items from the library into the deck.
 
-You can add tracks to the library and then drag and drop them into the deck to start playing. This is done by overriding the `isInterestedInDragSource` and `itemDropped` methods of `juce::DragAndDropTarget` in the `DeckGUI` class. An library item made draggable by overriding the `getDragSourceDescription` method of `juce::TableListBoxModel` in the `LibraryComponent` class. The information about the item is stored in a XML-serialized `juce::ValueTree` object. The `isInterestedInDragSource` method of the `DeckGUI` class performs check to ensure that the dragged object is a library item. The `itemDropped` method calls the `Deck::loadFile` method to load the item into the deck.
+You can add tracks to the library and then drag and drop them into the deck to start playing. This is done by overriding the `isInterestedInDragSource` and `itemDropped` methods of `juce::DragAndDropTarget` in the `Deck` class. An library item made draggable by overriding the `getDragSourceDescription` method of `juce::TableListBoxModel` in the `LibraryComponent` class. The information about the item is stored in a XML-serialized `juce::ValueTree` object. The `isInterestedInDragSource` method of the `DecDecklass performs check to ensure that the dragged object is a library item. The `itemDropped` method calls the `Deck::loadFile` method to load the item into the deck.
 
 [[Screenshot with library]]
 
 ### R1B: can play two or more tracks
+
+To play a track it should be loaded into a deck. The deck is implemented in the `Deck` class. Every deck has its own player implemented in ``.
 
 [[Screenshot with two tracks playing]]
 
@@ -91,7 +93,7 @@ If a user types in the search box, the `LibraryComponent` class receives a `Text
 
 ### R3D: Component allows the user to load files from the library into a deck
 
-You can drag and drop files from the library into the deck. This is done by allowing a library item to be dragged by overriding the `juce::TableListBoxModel::getDragSourceDescription` method in the `LibraryComponent` class. An information about the dragged item is stored in a XML-serialized `juce::ValueTree` object. The dragged object received by overriding the `juce::TextDragAndDropTarget::itemDropped` method in the `DeckGUI` class. The `DeckGUI` unserializes the `juce::ValueTree` object from a XML string received by `itemDropped` as an argument, get the item's file path, finally loads the file into the deck.
+You can drag and drop files from the library into the deck. This is done by allowing a library item to be dragged by overriding the `juce::TableListBoxModel::getDragSourceDescription` method in the `LibraryComponent` class. An information about the dragged item is stored in a XML-serialized `juce::ValueTree` object. The dragged object received by overriding the `juce::TextDragAndDropTarget::itemDropped` method in the `Deck` class. The `DecDecknserializes the `juce::ValueTree` object from a XML string received by `itemDropped` as an argument, get the item's file path, finally loads the file into the deck.
 
 ### R3E: The music library persists so that it is restored when the user exits then restarts the application
 
@@ -99,7 +101,7 @@ This functionality is implemented in `LibraryComponent::saveLibrary` and `Librar
 
 ## R4: Implementation of a complete custom GUI
 
-### R4A: GUI layout is significantly different from the basic DeckGUI shown in class, with extra controls
+### R4A: GUI layout is significantly different from the basic Deck shown in class, with extra controls
 
 1. To ensure the app has enough space to display all the controls, I set the minimum size of the application window to `1024x768` pixels, but not less than the user's screen resolution. This is done by determining the screen size and then setting the minimum size for the `ComponentBoundsConstrainer` instance in the `MainWindow::MainWindow` method in `Main.cpp`:
 

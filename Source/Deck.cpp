@@ -1,14 +1,14 @@
 #include <filesystem>
 
 #include <JuceHeader.h>
-#include "DeckGUI.h"
+#include "Deck.h"
 #include "Formatter.h"
 
-DeckGUI::DeckGUI(   juce::AudioFormatManager& _formatManager,
-                    juce::AudioThumbnailCache& cacheToUse
-                ) : player(_formatManager),
-                    formatManager(_formatManager),
-                    waveformSlider(_formatManager, cacheToUse)
+Deck::Deck( juce::AudioFormatManager& _formatManager,
+            juce::AudioThumbnailCache& cacheToUse) :
+            player(_formatManager),
+            formatManager(_formatManager),
+            waveformSlider(_formatManager, cacheToUse)
 {
     addAndMakeVisible(volumeFader);
     addAndMakeVisible(speedFader);
@@ -31,13 +31,13 @@ DeckGUI::DeckGUI(   juce::AudioFormatManager& _formatManager,
     removeButton.addListener(this);
 }
 
-DeckGUI::~DeckGUI()
+Deck::~Deck()
 {
     player.releaseResources();
     stopTimer();
 }
 
-void DeckGUI::paint (juce::Graphics& g)
+void Deck::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
 
@@ -45,7 +45,7 @@ void DeckGUI::paint (juce::Graphics& g)
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 }
 
-void DeckGUI::resized()
+void Deck::resized()
 {
 
     using Track = juce::Grid::TrackInfo;
@@ -80,7 +80,7 @@ void DeckGUI::resized()
     grid.performLayout(getLocalBounds());
 }
 
-void DeckGUI::buttonClicked(juce::Button* button)
+void Deck::buttonClicked(juce::Button* button)
 {
     if (button == &loadButton)
     {
@@ -100,7 +100,7 @@ void DeckGUI::buttonClicked(juce::Button* button)
     }
 }
 
-void DeckGUI::sliderValueChanged (juce::Slider *slider)
+void Deck::sliderValueChanged (juce::Slider *slider)
 {
     if (slider == &waveformSlider)
     {
@@ -108,7 +108,7 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
     }
 }
 
-void DeckGUI::timerCallback()
+void Deck::timerCallback()
 {
     if (player.isPlaying()) {
         waveformSlider.setValue(player.getPositionRelative());
@@ -120,7 +120,7 @@ void DeckGUI::timerCallback()
  * Overides the juce::FileDragAndDropTarget, this method is called when the user drags files over the component
  * we check if the file is supported by the format manager before allowing them to be dropped
  */
-bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
+bool Deck::isInterestedInFileDrag (const juce::StringArray &files)
 {
     // we can load only one file at a time into the deck, so we only check the first file
     auto file = files[0];
@@ -135,7 +135,7 @@ bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
 }
 
 // Overrides the juce::FileDragAndDropTarget, this method is called when the user drops files on the component
-void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
+void Deck::filesDropped (const juce::StringArray &files, int x, int y)
 {
     // at least one file
     if (files.size() < 1)
@@ -147,7 +147,7 @@ void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
 }
 
 /** implement juce::TextDragAndDropTarget */
-bool DeckGUI::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+bool Deck::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
     if (draggedItemInfo.isValid() && draggedItemInfo.getType().toString() == "LibraryItem")
@@ -156,7 +156,7 @@ bool DeckGUI::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
     return false;
 }
 
-void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
+void Deck::itemDropped(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
     juce::String filePath = draggedItemInfo.getProperty("filePath");
@@ -165,7 +165,7 @@ void DeckGUI::itemDropped(const SourceDetails& dragSourceDetails)
     loadFile(file);
 }
 
-void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
+void Deck::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &volumeFader)
     {
@@ -201,7 +201,7 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
     }
 }
 
-void DeckGUI::loadFile(juce::File file)
+void Deck::loadFile(juce::File file)
 {
     if (!file.existsAsFile())
         return;

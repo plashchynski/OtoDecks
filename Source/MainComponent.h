@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
-#include "DeckGUI.h"
+#include "Deck.h"
 #include "LibraryComponent.h"
 #include "Fader.h"
 #include "ControlButton.h"
@@ -38,9 +38,9 @@ private:
     juce::AudioThumbnailCache thumbCache{100};
 
     void addDeck();
-    void removeDeck(DeckGUI *deck);
+    void removeDeck(Deck *deck);
 
-    std::vector<DeckGUI*> decks;
+    std::vector<Deck*> decks;
 
     juce::MixerAudioSource mixerSource;
 
