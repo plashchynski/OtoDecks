@@ -4,12 +4,11 @@
 #include "DeckGUI.h"
 #include "Formatter.h"
 
-DeckGUI::DeckGUI(DJAudioPlayer* _player,
-                juce::AudioFormatManager& _formatManager,
-                juce::AudioThumbnailCache& cacheToUse
-           ) : player(_player),
-               formatManager(_formatManager),
-               waveformSlider(_formatManager, cacheToUse)
+DeckGUI::DeckGUI(   juce::AudioFormatManager& _formatManager,
+                    juce::AudioThumbnailCache& cacheToUse
+                ) : player(_formatManager),
+                    formatManager(_formatManager),
+                    waveformSlider(_formatManager, cacheToUse)
 {
     addAndMakeVisible(volumeFader);
     addAndMakeVisible(speedFader);
@@ -25,7 +24,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     volumeFader.addChangeListener(this);
     speedFader.addChangeListener(this);
     playControlButton.addChangeListener(this);
-    player->addChangeListener(this);
+    player.addChangeListener(this);
 
     waveformSlider.addListener(this);
     loadButton.addListener(this);
@@ -34,6 +33,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
 DeckGUI::~DeckGUI()
 {
+    player.releaseResources();
     stopTimer();
 }
 
@@ -94,7 +94,7 @@ void DeckGUI::buttonClicked(juce::Button* button)
     }
     else if (button == &removeButton)
     {
-        player->stop();
+        player.stop();
         toBeRemoved = true;
         sendChangeMessage();
     }
@@ -104,15 +104,15 @@ void DeckGUI::sliderValueChanged (juce::Slider *slider)
 {
     if (slider == &waveformSlider)
     {
-        player->setPositionRelative(slider->getValue());
+        player.setPositionRelative(slider->getValue());
     }
 }
 
 void DeckGUI::timerCallback()
 {
-    if (player->isPlaying()) {
-        waveformSlider.setValue(player->getPositionRelative());
-        durationLabel.setText(Formatter::formatTime(player->getLengthInSeconds() - player->getPositionAbsolute()), juce::dontSendNotification);
+    if (player.isPlaying()) {
+        waveformSlider.setValue(player.getPositionRelative());
+        durationLabel.setText(Formatter::formatTime(player.getLengthInSeconds() - player.getPositionAbsolute()), juce::dontSendNotification);
     }
 }
 
@@ -169,25 +169,25 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &volumeFader)
     {
-        player->setGain(volumeFader.getValue());
+        player.setGain(volumeFader.getValue());
     }
 
     if (source == &speedFader)
     {
-        player->setSpeed(speedFader.getValue());
+        player.setSpeed(speedFader.getValue());
     }
 
     if (source == &playControlButton)
     {
         if (playControlButton.getStatus() == PlayControlButton::Status::PlayRequested)
-            player->start();
+            player.start();
         else if (playControlButton.getStatus() == PlayControlButton::Status::PauseRequested)
-            player->stop();
+            player.stop();
     }
 
-    if (source == player)
+    if (source == &player)
     {
-        if (player->isPlaying())
+        if (player.isPlaying())
         {
             startTimer(500);
             playControlButton.setStatus(PlayControlButton::Status::Playing);
@@ -197,7 +197,7 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
             playControlButton.setStatus(PlayControlButton::Status::Paused);
             stopTimer();
         }
-        waveformSlider.setValue(player->getPositionRelative());
+        waveformSlider.setValue(player.getPositionRelative());
     }
 }
 
@@ -208,7 +208,7 @@ void DeckGUI::loadFile(juce::File file)
 
     juce::URL url{file};
     try {
-        player->loadURL(url);
+        player.loadURL(url);
     } catch (DJAudioPlayer::UnsupportedFormatError e) {
         juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::WarningIcon,
             "Unsupported file format",
@@ -218,14 +218,14 @@ void DeckGUI::loadFile(juce::File file)
     }
 
     // Trying to get the metadata from the file
-    auto metadata = player->metaData;
+    auto metadata = player.metaData;
     if (metadata.size() > 0)
         titleLabel.setText(metadata["title"] + " by " + metadata["artist"], juce::dontSendNotification);
     else
         // Default values for the metadata
         titleLabel.setText(file.getFileNameWithoutExtension() + " by " + "Unknown artist", juce::dontSendNotification);
 
-    durationLabel.setText(Formatter::formatTime(player->getLengthInSeconds()), juce::dontSendNotification);
+    durationLabel.setText(Formatter::formatTime(player.getLengthInSeconds()), juce::dontSendNotification);
 
     waveformSlider.loadURL(url);
     playControlButton.setStatus(PlayControlButton::Status::Paused);

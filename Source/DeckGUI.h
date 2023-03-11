@@ -21,8 +21,7 @@ class DeckGUI   :   public juce::Component,
                     public juce::ChangeBroadcaster
 {
 public:
-    DeckGUI(DJAudioPlayer* player,
-            juce::AudioFormatManager& _formatManager,
+    DeckGUI(juce::AudioFormatManager& _formatManager,
             juce::AudioThumbnailCache& cacheToUse);
     ~DeckGUI();
 
@@ -55,6 +54,8 @@ public:
     */
     void loadFile(juce::File file);
 
+    DJAudioPlayer player;
+
     bool toBeRemoved = false;
 
 private:
@@ -81,6 +82,5 @@ private:
     juce::AudioFormatManager& formatManager;
     juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
-    DJAudioPlayer* player;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DeckGUI)
 };

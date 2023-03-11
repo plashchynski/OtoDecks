@@ -40,22 +40,25 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    for (auto deck : decks)
+        removeDeck(deck);
+
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
 }
 
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    for (auto player : players)
+    for (auto deck : decks)
     {
-        player->prepareToPlay(samplesPerBlockExpected, sampleRate);
+        deck->player.prepareToPlay(samplesPerBlockExpected, sampleRate);
     }
 
     mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 
-    for (auto player : players)
+    for (auto deck : decks)
     {
-        mixerSource.addInputSource(player, false);
+        mixerSource.addInputSource(&deck->player, false);
     }
 }
 
@@ -70,9 +73,9 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
 
     // For more details, see the help for AudioProcessor::releaseResources()
-    for (auto player : players)
+    for (auto deck : decks)
     {
-        player->releaseResources();
+        deck->player.releaseResources();
     }
     mixerSource.releaseResources();
 }
@@ -130,15 +133,13 @@ void MainComponent::resized()
 
 void MainComponent::addDeck()
 {
-    DJAudioPlayer *player = new DJAudioPlayer(formatManager);
-    DeckGUI *deck = new DeckGUI(player, formatManager, thumbCache);
-
-    players.push_back(player);
+    DeckGUI *deck = new DeckGUI(formatManager, thumbCache);
     decks.push_back(deck);
+
     addAndMakeVisible(deck);
     deck->addChangeListener(this);
 
-    mixerSource.addInputSource(player, false);
+    mixerSource.addInputSource(&deck->player, false);
 
     resized();
 }
@@ -164,20 +165,14 @@ void MainComponent::buttonClicked(juce::Button *button)
 
 void MainComponent::removeDeck(DeckGUI *deck)
 {
-    // Find the index of the deck
+    // Find the index of the deck and remove it from the vector
     int index = std::find(decks.begin(), decks.end(), deck) - decks.begin();
+    decks.erase(decks.begin() + index);
 
     // Remove the deck
     removeChildComponent(deck);
-    decks.erase(decks.begin() + index);
+    mixerSource.removeInputSource(&deck->player);
     delete deck;
-
-    // Stop and delete the player
-    DJAudioPlayer *player = players[index];
-    mixerSource.removeInputSource(player);
-    players.erase(players.begin() + index);
-    player->releaseResources();
-    delete player;
 
     resized();
 }

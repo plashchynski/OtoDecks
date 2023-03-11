@@ -29,8 +29,7 @@ public:
     // Implements juce::Button::Listener
     void buttonClicked(juce::Button *button) override;
 
-    void addDeck();
-    void removeDeck(DeckGUI *deck);
+
 
 private:
     const int numDecks = 2;
@@ -38,7 +37,9 @@ private:
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
-    std::vector<DJAudioPlayer*> players;
+    void addDeck();
+    void removeDeck(DeckGUI *deck);
+
     std::vector<DeckGUI*> decks;
 
     juce::MixerAudioSource mixerSource;
