@@ -31,11 +31,13 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
     waveformSlider.addListener(this);
     loadButton.addListener(this);
 
+    // Configure the load button appearance and behaviour
     juce::Image loadButtonImg = juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize);
     loadButton.setImages(true, false, true,
         loadButtonImg, 1.0f, juce::Colours::transparentBlack,
         loadButtonImg, 0.7f, juce::Colours::transparentBlack,
         loadButtonImg, 0.4f, juce::Colours::transparentBlack);
+
     loadButton.setMouseCursor(juce::MouseCursor::PointingHandCursor);
     loadButton.setTooltip("Load a file to the deck");
 }
@@ -92,8 +94,9 @@ void DeckGUI::buttonClicked(juce::Button* button)
 {
     if (button == &loadButton)
     {
+        std::cout << formatManager.getWildcardForAllFormats() << std::endl;
         auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
-        fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
+        fileChooser.launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& chooser)
         {
             if (chooser.getResult().existsAsFile())
                 loadFile(chooser.getResult());
@@ -117,27 +120,34 @@ void DeckGUI::timerCallback()
     }
 }
 
-/** implement FileDragAndDropTarget */
+/**
+ * Overides the juce::FileDragAndDropTarget, this method is called when the user drags files over the component
+ * we check if the file is supported by the format manager before allowing them to be dropped
+ */
 bool DeckGUI::isInterestedInFileDrag (const juce::StringArray &files)
 {
-    for (auto file : files)
-    {
-        std::string extension = std::filesystem::path(file.toStdString()).extension();
-        juce::AudioFormat* format = formatManager.findFormatForFileExtension(extension);
-        if (format == nullptr)
-            return false;
-    }
+    // we can load only one file at a time into the deck, so we only check the first file
+    auto file = files[0];
+    std::string extension = std::filesystem::path(file.toStdString()).extension();
+
+    // check if the file extension is supported by the format manager
+    juce::AudioFormat* format = formatManager.findFormatForFileExtension(extension);
+    if (format == nullptr)
+        return false;
 
     return true;
 }
 
+// Overrides the juce::FileDragAndDropTarget, this method is called when the user drops files on the component
 void DeckGUI::filesDropped (const juce::StringArray &files, int x, int y)
 {
-    if (files.size() > 0)
-    {
-        juce::File file{files[0]};
-        loadFile(file);
-    }
+    // at least one file
+    if (files.size() < 1)
+        return;
+
+    // we can load only one file at a time into the deck, so we only check the first file
+    juce::File file{files[0]};
+    loadFile(file);
 }
 
 /** implement juce::TextDragAndDropTarget */
@@ -197,24 +207,30 @@ void DeckGUI::changeListenerCallback(juce::ChangeBroadcaster *source)
 
 void DeckGUI::loadFile(juce::File file)
 {
-    juce::URL url{file};
-    player->loadURL(url);
-    waveformSlider.loadURL(url);
-    playControlButton.setStatus(PlayControlButton::Status::Paused);
+    if (!file.existsAsFile())
+        return;
 
-    // Default values for the metadata
-    titleLabel.setText(file.getFileNameWithoutExtension() + " by " + "Unknown artist", juce::dontSendNotification);
+    juce::URL url{file};
+    try {
+        player->loadURL(url);
+    } catch (DJAudioPlayer::UnsupportedFormatError e) {
+        juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::WarningIcon,
+            "Unsupported file format",
+            "The file you are trying to load is not supported by the application.",
+            "OK");
+        return;
+    }
 
     // Trying to get the metadata from the file
-    std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor(file));
-    if (reader)
-    {
-        durationLabel.setText(Formatter::formatTime(reader->lengthInSamples / reader->sampleRate), juce::dontSendNotification);
+    auto metadata = player->metaData;
+    if (metadata.size() > 0)
+        titleLabel.setText(metadata["title"] + " by " + metadata["artist"], juce::dontSendNotification);
+    else
+        // Default values for the metadata
+        titleLabel.setText(file.getFileNameWithoutExtension() + " by " + "Unknown artist", juce::dontSendNotification);
 
-        auto metadata = reader->metadataValues;
-        if (metadata.size() > 0)
-        {
-            titleLabel.setText(metadata["title"] + " by " + metadata["artist"], juce::dontSendNotification);
-        }
-    }
+    durationLabel.setText(Formatter::formatTime(player->getLengthInSeconds()), juce::dontSendNotification);
+
+    waveformSlider.loadURL(url);
+    playControlButton.setStatus(PlayControlButton::Status::Paused);
 }

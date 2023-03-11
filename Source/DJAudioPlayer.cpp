@@ -34,10 +34,13 @@ void DJAudioPlayer::loadURL(juce::URL audioURL)
     auto* reader = formatManager.createReaderFor(audioURL.createInputStream(juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inAddress)));
     if (reader != nullptr) // good file!
     {
+        metaData = reader->metadataValues;
         std::unique_ptr<juce::AudioFormatReaderSource> newSource (new juce::AudioFormatReaderSource (reader, true));
         transportSource.setSource (newSource.get(), 0, nullptr, reader->sampleRate);
         readerSource.reset (newSource.release());
     }
+    else
+        throw UnsupportedFormatError{};
 }
 
 void DJAudioPlayer::setGain(double gain)
@@ -46,7 +49,8 @@ void DJAudioPlayer::setGain(double gain)
     {
         std::cout << "DJAudioPlayer::setGain gain should be between 0 and 1" << std::endl;
     }
-    else {
+    else
+    {
         transportSource.setGain(gain);
     }
 }

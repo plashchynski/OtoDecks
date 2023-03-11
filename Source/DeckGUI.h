@@ -64,11 +64,12 @@ private:
     juce::Label titleLabel;
     juce::Label durationLabel;
 
-    juce::FileChooser fChooser{"Select a file..."};
+    
 
     WaveformSlider waveformSlider;
 
     juce::AudioFormatManager& formatManager;
+    juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
     DJAudioPlayer* player;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DeckGUI)

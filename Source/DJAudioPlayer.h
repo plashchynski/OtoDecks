@@ -68,6 +68,16 @@ public:
     */
     void setPositionRelative(double pos);
 
+    /**
+     * This is an exception that is thrown by loadURL when the file format is not supported
+    */
+    class UnsupportedFormatError : public std::exception {};
+
+    /**
+     * Stores the metadata (title, artist, etc.) of the loaded file
+    */
+    juce::StringPairArray metaData;
+
 private:
     juce::AudioFormatManager& formatManager;
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;

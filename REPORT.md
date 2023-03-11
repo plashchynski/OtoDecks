@@ -22,19 +22,36 @@
 | R4B: GUI layout includes the custom Component from R2 | ✅ Implemented |
 | R4C: GUI layout includes the music library component fro R3 | ✅ Implemented |
 
-
+[[Screenshot of the GUI]]
 
 ## R1: Basic functionality
 
-The application should contain all the basic functionality shown in class:
-
 ### R1A: can load audio files into audio players
 
-There are two ways to load audio files into the audio players:
-1. Drag and drop files from the file explorer into the deck
-2. Drag and drop library items from the library into the deck
+There are three ways to load audio files into the audio players:
+1. Drag and drop files from the file explorer into the deck.
+
+This feature is implemented by overriding the `isInterestedInFileDrag` and `filesDropped` methods of `juce::FileDragAndDropTarget` in the `DeckGUI` class. The `isInterestedInFileDrag` method is checking if a dragged file has a valid audio file extension supported by the global `AudioFormatManager` instance. The `filesDropped` method is called when a file is dropped into the deck, calls the `Deck::loadFile` method to load the file into the deck. The `Deck::loadFile` calls `player->loadURL` to load the file into the player. The `DJAudioPlayer::loadURL` raises a custom exception `UnsupportedFormatError` if it fails to load the file into the player.
+
+[[Screenshot with an error message]]
+
+It prevents the user from loading unsupported files into the deck and gives a visual feedback to the user if the file is not supported.
+
+2. Click the "Load" button in the deck and select a file from the file explorer.
+
+[[Screenshot with buttons]]
+
+It uses the `formatManager.getWildcardForAllFormats()` to get a wildcard string for all the supported audio file extensions. This string is passed to the `juce::FileChooser` constructor to filter the files in the file explorer. When a file is selected, the `Deck::loadFile` is called to load the file into the deck. So, the `Deck::loadFile` is a single point of entry for loading files into the deck and performs the same checks as in the first method.
+
+3. Drag and drop library items from the library into the deck.
+
+You can add tracks to the library and then drag and drop them into the deck to start playing. This is done by overriding the `isInterestedInDragSource` and `itemDropped` methods of `juce::DragAndDropTarget` in the `DeckGUI` class. An library item made draggable by overriding the `getDragSourceDescription` method of `juce::TableListBoxModel` in the `LibraryComponent` class. The information about the item is stored in a XML-serialized `juce::ValueTree` object. The `isInterestedInDragSource` method of the `DeckGUI` class performs check to ensure that the dragged object is a library item. The `itemDropped` method calls the `Deck::loadFile` method to load the item into the deck.
+
+[[Screenshot with library]]
 
 ### R1B: can play two or more tracks
+
+[[Screenshot with two tracks playing]]
 
 ### R1C: can mix the tracks by varying each of their volumes
 
