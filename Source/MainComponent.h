@@ -35,11 +35,8 @@ private:
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
-    DJAudioPlayer player1{formatManager};
-    DeckGUI deckGUI1{&player1, formatManager, thumbCache};
-
-    DJAudioPlayer player2{formatManager};
-    DeckGUI deckGUI2{&player2, formatManager, thumbCache};
+    std::vector<DJAudioPlayer*> players;
+    std::vector<DeckGUI*> decks;
 
     juce::MixerAudioSource mixerSource;
 
