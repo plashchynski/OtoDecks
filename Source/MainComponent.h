@@ -29,16 +29,17 @@ public:
     // Implements juce::Button::Listener
     void buttonClicked(juce::Button *button) override;
 
-private:
     void addDeck();
-    void removeDeck(int index);
+    void removeDeck(DeckGUI *deck);
+
+private:
+    const int numDecks = 2;
 
     juce::AudioFormatManager formatManager;
     juce::AudioThumbnailCache thumbCache{100};
 
     std::vector<DJAudioPlayer*> players;
     std::vector<DeckGUI*> decks;
-    std::vector<ControlButton*> removeDeckButtons;
 
     juce::MixerAudioSource mixerSource;
 
@@ -46,8 +47,6 @@ private:
         juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize),
         "Add an additional deck"
     };
-
-    juce::Image removeDeckButtonImg = juce::ImageCache::getFromMemory(BinaryData::remove_png, BinaryData::remove_pngSize);
 
     Fader masterVolumeFader{"Master Volume", Fader::Type::Horizontal, "percent", 0, 1, 1};
 

@@ -9,7 +9,6 @@ MainComponent::MainComponent()
     addAndMakeVisible(addDeckButton);
     addAndMakeVisible(masterVolumeFader);
 
-    int numDecks = 2;
     for (int i = 0; i < numDecks; i++)
         addDeck();
 
@@ -114,22 +113,16 @@ void MainComponent::resized()
 
     juce::FlexBox mixerControlsFb;
     mixerControlsFb.flexDirection = juce::FlexBox::Direction::row;
-    mixerControlsFb.items.add(juce::FlexItem(addDeckButton).withMargin(10).withMinWidth(50.0f).withFlex(0, 0));
+    mixerControlsFb.items.add(juce::FlexItem(addDeckButton).withMargin(10).withMinWidth(50).withFlex(0, 0));
     mixerControlsFb.items.add(juce::FlexItem(masterVolumeFader).withMinWidth(150.0f).withFlex(0, 0));
 
     juce::FlexBox mainFb;
     mainFb.flexDirection = juce::FlexBox::Direction::column;
 
-    mainFb.items.add(juce::FlexItem(mixerControlsFb).withMinHeight(70.0f).withFlex(0, 0));
-    for (int i = 0; i < decks.size(); i++)
-    {
-        juce::FlexBox *deckFb = new juce::FlexBox();
-        deckFb->flexDirection = juce::FlexBox::Direction::row;
-        deckFb->items.add(juce::FlexItem(*removeDeckButtons[i]).withMargin(10).withMinWidth(50.0f).withFlex(0, 0));
-        deckFb->items.add(juce::FlexItem(*decks[i]).withFlex(1, 1));
+    mainFb.items.add(juce::FlexItem(mixerControlsFb).withHeight(70).withFlex(0, 0));
+    for (auto deck : decks)
+        mainFb.items.add(juce::FlexItem(*deck).withHeight(150).withFlex(0, 0));
 
-        mainFb.items.add(juce::FlexItem(*deckFb).withMinHeight(150.0f).withFlex(0, 0));
-    }
     mainFb.items.add(juce::FlexItem(libraryComponent).withMinHeight(300.0f).withFlex(2, 2));
 
     mainFb.performLayout(getLocalBounds().toFloat());
@@ -137,16 +130,15 @@ void MainComponent::resized()
 
 void MainComponent::addDeck()
 {
-    players.push_back(new DJAudioPlayer(formatManager));
-    decks.push_back(new DeckGUI(players.back(), formatManager, thumbCache));
-    addAndMakeVisible(decks.back());
+    DJAudioPlayer *player = new DJAudioPlayer(formatManager);
+    DeckGUI *deck = new DeckGUI(player, formatManager, thumbCache);
 
-    ControlButton *removeDeckButton = new ControlButton(removeDeckButtonImg, "Remove this deck");
+    players.push_back(player);
+    decks.push_back(deck);
+    addAndMakeVisible(deck);
+    deck->addChangeListener(this);
 
-    addAndMakeVisible(removeDeckButton);
-    removeDeckButton->addListener(this);
-
-    removeDeckButtons.push_back(removeDeckButton);
+    mixerSource.addInputSource(player, false);
 
     resized();
 }
@@ -155,41 +147,39 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &masterVolumeFader)
         juce::SystemAudioVolume::setGain(masterVolumeFader.getValue());
+
+    else if (typeid(*source) == typeid(DeckGUI))
+    {
+        DeckGUI *deck = dynamic_cast<DeckGUI*>(source);
+        if (deck->toBeRemoved)
+        {
+            removeDeck(deck);
+        }
+    }
 }
 
 void MainComponent::buttonClicked(juce::Button *button)
 {
     if (button == &addDeckButton)
         addDeck();
-    // Find if the clicked button is among the removeDeckButtons
-    else if (std::find(removeDeckButtons.begin(), removeDeckButtons.end(), button) != removeDeckButtons.end())
-    {
-        int index = std::distance(removeDeckButtons.begin(), std::find(removeDeckButtons.begin(), removeDeckButtons.end(), button));
-        removeDeck(index);
-
-        resized();
-    }
 }
 
-void MainComponent::removeDeck(int index)
+void MainComponent::removeDeck(DeckGUI *deck)
 {
+    // Find the index of the deck
+    int index = std::find(decks.begin(), decks.end(), deck) - decks.begin();
+
     // Remove the deck
-    DeckGUI *deck = decks[index];
     removeChildComponent(deck);
     decks.erase(decks.begin() + index);
     delete deck;
 
-    // Remove the removeDeckButton
-    ControlButton *removeDeckButton = removeDeckButtons[index];
-    removeChildComponent(removeDeckButton);
-    removeDeckButtons.erase(removeDeckButtons.begin() + index);
-    delete removeDeckButtons[index];
-
     // Stop and delete the player
     DJAudioPlayer *player = players[index];
-    player->stop();
     mixerSource.removeInputSource(player);
     players.erase(players.begin() + index);
     player->releaseResources();
     delete player;
+
+    resized();
 }

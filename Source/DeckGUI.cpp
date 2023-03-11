@@ -4,7 +4,6 @@
 #include "DeckGUI.h"
 #include "Formatter.h"
 
-//==============================================================================
 DeckGUI::DeckGUI(DJAudioPlayer* _player,
                 juce::AudioFormatManager& _formatManager,
                 juce::AudioThumbnailCache& cacheToUse
@@ -14,7 +13,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 {
     addAndMakeVisible(volumeFader);
     addAndMakeVisible(speedFader);
-
+    addAndMakeVisible(removeButton);
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
     addAndMakeVisible(durationLabel);
@@ -30,6 +29,7 @@ DeckGUI::DeckGUI(DJAudioPlayer* _player,
 
     waveformSlider.addListener(this);
     loadButton.addListener(this);
+    removeButton.addListener(this);
 }
 
 DeckGUI::~DeckGUI()
@@ -54,27 +54,27 @@ void DeckGUI::resized()
     juce::Grid grid;
 
     grid.templateRows = { Track(), Track(Fr(1)) };
-    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
+    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
         /**
-         * +-----------------+-----------------+------------+-------------------+---------------+-------------+
-         * | volumeFader     | speedFader      | loadButton | playControlButton | durationLabel | titleLabel  |
-         * +                 +                 +------------+-------------------+---------------+-------------+
-         * |                 |                 | waveformSlider                                               |
-         * +-----------------+-----------------+------------+-------------------------------------------------+
+         * +-----+-----------------+-----------------+------------+-------------------+---------------+-------------+
+         * | (X) | volumeFader     | speedFader      | loadButton | playControlButton | durationLabel | titleLabel  |
+         * |     +                 +                 +------------+-------------------+---------------+-------------+
+         * |     |                 |                 | waveformSlider                                               |
+         * +-----+-----------------+-----------------+------------+-------------------------------------------------+
         */
-        juce::GridItem(volumeFader).withWidth(50).withArea(1, 1, 4, 1),
-        juce::GridItem(speedFader).withWidth(50).withArea(1, 2, 4, 2),
+        juce::GridItem(removeButton).withWidth(50).withHeight(50).withArea(1, 1).withMargin(10),
+        juce::GridItem(volumeFader).withWidth(50).withArea(1, 2, 4, 2),
+        juce::GridItem(speedFader).withWidth(50).withArea(1, 3, 4, 3),
 
-        juce::GridItem(loadButton).withSize(32, 32).withArea(1, 3).withMargin(juce::GridItem::Margin(5, 5, 5, 5)),
-        juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 4).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
-        juce::GridItem(durationLabel).withWidth(50).withArea(1, 5),
-        
+        juce::GridItem(loadButton).withSize(32, 32).withArea(1, 4).withMargin(juce::GridItem::Margin(5, 5, 5, 5)),
+        juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 5).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
+        juce::GridItem(durationLabel).withWidth(50).withArea(1, 6),
 
-        juce::GridItem(titleLabel).withArea(1, 6),
+        juce::GridItem(titleLabel).withArea(1, 7),
 
-        juce::GridItem(waveformSlider).withArea(2, 3, 2, 7),
+        juce::GridItem(waveformSlider).withArea(2, 4, 2, 8),
     });
 
     grid.performLayout(getLocalBounds());
@@ -91,6 +91,12 @@ void DeckGUI::buttonClicked(juce::Button* button)
             if (chooser.getResult().existsAsFile())
                 loadFile(chooser.getResult());
         });
+    }
+    else if (button == &removeButton)
+    {
+        player->stop();
+        toBeRemoved = true;
+        sendChangeMessage();
     }
 }
 

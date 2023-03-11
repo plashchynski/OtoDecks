@@ -17,7 +17,8 @@ class DeckGUI   :   public juce::Component,
                     public juce::DragAndDropTarget,
                     public juce::TextEditor::Listener,
                     public juce::Timer,
-                    public juce::ChangeListener
+                    public juce::ChangeListener,
+                    public juce::ChangeBroadcaster
 {
 public:
     DeckGUI(DJAudioPlayer* player,
@@ -54,8 +55,15 @@ public:
     */
     void loadFile(juce::File file);
 
+    bool toBeRemoved = false;
+
 private:
     PlayControlButton playControlButton;
+
+    ControlButton removeButton{
+        juce::ImageCache::getFromMemory(BinaryData::remove_png, BinaryData::remove_pngSize),
+        "Remove the deck"
+    };
 
     ControlButton loadButton{
         juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize),
