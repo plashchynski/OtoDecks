@@ -58,13 +58,11 @@ private:
 
     juce::ImageButton loadButton{"Load"};
 
-    Fader volumeFader{"Volume", "percent", 0.0, 1.0, 1.0};
-    Fader speedFader{"Speed", "percent", 0.0, 3.0, 1.0};
+    Fader volumeFader{"Volume", Fader::Type::Vertical, "percent", 0.0, 1.0, 1.0};
+    Fader speedFader{"Speed", Fader::Type::Vertical, "percent", 0.0, 3.0, 1.0};
 
     juce::Label titleLabel;
     juce::Label durationLabel;
-
-    
 
     WaveformSlider waveformSlider;
 

@@ -31,7 +31,7 @@
 There are three ways to load audio files into the audio players:
 1. Drag and drop files from the file explorer into the deck.
 
-This feature is implemented by overriding the `isInterestedInFileDrag` and `filesDropped` methods of `juce::FileDragAndDropTarget` in the `DeckGUI` class. The `isInterestedInFileDrag` method is checking if a dragged file has a valid audio file extension supported by the global `AudioFormatManager` instance. The `filesDropped` method is called when a file is dropped into the deck, calls the `Deck::loadFile` method to load the file into the deck. The `Deck::loadFile` calls `player->loadURL` to load the file into the player. The `DJAudioPlayer::loadURL` raises a custom exception `UnsupportedFormatError` if it fails to load the file into the player.
+This feature is implemented by overriding the `isInterestedInFileDrag` and `filesDropped` methods of `juce::FileDragAndDropTarget` in the `DeckGUI` class. The `isInterestedInFileDrag` method is checking if a dragged file has a valid audio file extension supported by the global `AudioFormatManager` instance. The `filesDropped` method is called when a file is dropped into the deck, calls the `Deck::loadFile` method to load the file into the deck. The `Deck::loadFile` calls `player->loadURL` to load the file into the player. The `DJAudioPlayer::loadURL` raises a custom exception `UnsupportedFormatError` if it fails to load the file into the player. The exception is caught in the `Deck::loadFile` method and an alert message is shown to the user:
 
 [[Screenshot with an error message]]
 

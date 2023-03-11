@@ -1,7 +1,7 @@
 #include "Fader.h"
 
-Fader::Fader(juce::String name, juce::String _unit, double _minValue, double _maxValue, double _defaultValue) :
-    unit(_unit), minValue(_minValue), maxValue(_maxValue), defaultValue(_defaultValue)
+Fader::Fader(juce::String name, Type _type, juce::String _unit, double _minValue, double _maxValue, double _defaultValue) :
+    unit(_unit), minValue(_minValue), maxValue(_maxValue), defaultValue(_defaultValue), type(_type)
 {
     addAndMakeVisible(label);
     addAndMakeVisible(valueLabel);
@@ -11,20 +11,27 @@ Fader::Fader(juce::String name, juce::String _unit, double _minValue, double _ma
     label.setJustificationType(juce::Justification::centred);
     valueLabel.setJustificationType(juce::Justification::centred);
 
+    if (type == Type::Vertical)
+    {
+        slider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
+        slider.setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
+    }
+    else
+    {
+        slider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+        slider.setMouseCursor(juce::MouseCursor::LeftRightResizeCursor);
+    }
+
     slider.addListener(this);
     slider.setRange(minValue, maxValue);
     slider.setValue(defaultValue);
-
-    slider.setMouseCursor(juce::MouseCursor::UpDownResizeCursor);
-}
-
-Fader::~Fader()
-{
 }
 
 void Fader::paint(juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
+
+    // g.fillAll(juce::Colours::white);
 
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
@@ -32,12 +39,50 @@ void Fader::paint(juce::Graphics& g)
 
 void Fader::resized()
 {
-    auto area = getLocalBounds();
-    auto labelArea = area.removeFromTop(20);
-    label.setBounds(labelArea);
-    auto valueArea = area.removeFromTop(20);
-    valueLabel.setBounds(valueArea);
-    slider.setBounds(area);
+    if (type == Type::Vertical)
+    {
+        /**
+         * +--------+
+         * | label  |
+         * +--------+
+         * | value  |
+         * +--------+
+         * | slider |
+         * +--------+
+        */
+
+        auto area = getLocalBounds();
+        auto labelArea = area.removeFromTop(20);
+        label.setBounds(labelArea);
+        auto valueArea = area.removeFromTop(20);
+        valueLabel.setBounds(valueArea);
+        slider.setBounds(area);
+    }
+    else if (type == Type::Horizontal)
+    {
+        /**
+         * +--------+--------+
+         * | label  | value  |
+         * +--------+--------+
+         * | slider          |
+         * +--------+--------+
+        */
+
+        using Track = juce::Grid::TrackInfo;
+        using Fr = juce::Grid::Fr;
+
+        juce::Grid grid;
+        grid.templateRows = { Track(Fr(1)), Track(Fr(2)) };
+        grid.templateColumns = { Track(Fr(2)), Track(Fr(1)) };
+
+        grid.items.addArray({
+            juce::GridItem(label),
+            juce::GridItem(valueLabel),
+            juce::GridItem(slider).withArea(2, 1, 2, 3)
+        });
+
+        grid.performLayout(getLocalBounds());
+    }
 }
 
 void Fader::sliderValueChanged(juce::Slider* slider)

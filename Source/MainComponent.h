@@ -4,6 +4,7 @@
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
 #include "LibraryComponent.h"
+#include "MixerControlPanel.h"
 
 //==============================================================================
 /*
@@ -41,6 +42,8 @@ private:
     DeckGUI deckGUI2{&player2, formatManager, thumbCache};
 
     juce::MixerAudioSource mixerSource;
+
+    MixerControlPanel mixerControlPanel;
 
     LibraryComponent libraryComponent{formatManager};
 

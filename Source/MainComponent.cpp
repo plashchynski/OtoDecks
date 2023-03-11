@@ -26,6 +26,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(tooltipWindow);
     addAndMakeVisible(deckGUI1);
     addAndMakeVisible(deckGUI2);
+    addAndMakeVisible(mixerControlPanel);
     addAndMakeVisible(libraryComponent);
 
     libraryComponent.loadLibrary();
@@ -49,7 +50,6 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
     mixerSource.addInputSource(&player1, false);
     mixerSource.addInputSource(&player2, false);
-
  }
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
@@ -81,22 +81,25 @@ void MainComponent::resized()
     /**
      * The layout is:
      * 
-     * +-----------------+
-     * | Deck 1          | height is fixed to 150px and cannot be grow or shrink
-     * +-----------------+
-     * | Deck 2          |
-     * +-----------------+
-     * | Library         | height is not fixed and can grow or shrink
-     * |                 |
-     * |                 |
-     * +-----------------+
+     * +-------------------+
+     * | Deck 1            | height is fixed to 150px and cannot be grow or shrink
+     * +-------------------+
+     * | Deck 2            |
+     * +-------------------+
+     * | mixerControlPanel |
+     * +-------------------+
+     * | Library           | height is not fixed and can grow or shrink
+     * |                   |
+     * |                   |
+     * +-------------------+
     */
     juce::FlexBox fb;
     fb.flexDirection = juce::FlexBox::Direction::column;
 
     fb.items.add(juce::FlexItem(deckGUI1).withMinHeight(150.0f).withFlex(0, 0));
     fb.items.add(juce::FlexItem(deckGUI2).withMinHeight(150.0f).withFlex(0, 0));
-    fb.items.add(juce::FlexItem(libraryComponent).withMinHeight(100.0f).withFlex(2, 2));
+    fb.items.add(juce::FlexItem(mixerControlPanel).withMinHeight(70.0f).withFlex(0, 0));
+    fb.items.add(juce::FlexItem(libraryComponent).withMinHeight(300.0f).withFlex(2, 2));
 
     fb.performLayout(getLocalBounds().toFloat());
 }

@@ -7,8 +7,9 @@ class Fader :   public juce::Component,
                 public juce::ChangeBroadcaster
 {
 public:
-    Fader(juce::String name, juce::String unit, double minValue, double maxValue, double defaultValue);
-    ~Fader();
+    enum Type { Vertical, Horizontal };
+
+    Fader(juce::String name, Type type, juce::String unit, double minValue, double maxValue, double defaultValue);
 
     void paint(juce::Graphics&) override;
     void resized() override;
@@ -19,6 +20,8 @@ public:
     double getValue() const;
 
 private:
+    Type type;
+
     double minValue;
     double maxValue;
     double defaultValue;
