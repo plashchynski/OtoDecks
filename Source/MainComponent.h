@@ -1,7 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "DJAudioPlayer.h"
+#include "Player.h"
 #include "Deck.h"
 #include "LibraryComponent.h"
 #include "Fader.h"

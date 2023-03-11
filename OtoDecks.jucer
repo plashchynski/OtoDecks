@@ -34,9 +34,8 @@
             file="Source/WaveformSlider.h"/>
       <FILE id="VedzS9" name="Deck.cpp" compile="1" resource="0" file="Source/Deck.cpp"/>
       <FILE id="AAfZll" name="Deck.h" compile="0" resource="0" file="Source/Deck.h"/>
-      <FILE id="FJ3kdo" name="DJAudioPlayer.cpp" compile="1" resource="0"
-            file="Source/DJAudioPlayer.cpp"/>
-      <FILE id="tD4y8L" name="DJAudioPlayer.h" compile="0" resource="0" file="Source/DJAudioPlayer.h"/>
+      <FILE id="FJ3kdo" name="Player.cpp" compile="1" resource="0" file="Source/Player.cpp"/>
+      <FILE id="tD4y8L" name="Player.h" compile="0" resource="0" file="Source/Player.h"/>
       <FILE id="V1OK3W" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="QdvPEx" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="i4lquP" name="MainComponent.cpp" compile="1" resource="0"

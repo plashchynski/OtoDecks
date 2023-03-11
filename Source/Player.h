@@ -2,13 +2,13 @@
 
 #include <JuceHeader.h>
 
-class DJAudioPlayer : public juce::AudioSource,
+class Player : public juce::AudioSource,
                       public juce::ChangeListener,
                       public juce::ChangeBroadcaster
 {
 public:
-    DJAudioPlayer(juce::AudioFormatManager& _formatManager);
-    ~DJAudioPlayer();
+    Player(juce::AudioFormatManager& _formatManager);
+    ~Player();
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;

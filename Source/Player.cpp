@@ -1,35 +1,35 @@
-#include "DJAudioPlayer.h"
+#include "Player.h"
 
-DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager& _formatManager)
+Player::Player(juce::AudioFormatManager& _formatManager)
 : formatManager(_formatManager)
 {
     transportSource.addChangeListener(this);
 }
 
-DJAudioPlayer::~DJAudioPlayer()
+Player::~Player()
 {
 
 }
 
-void DJAudioPlayer::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void Player::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 }
 
-void DJAudioPlayer::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
+void Player::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
     resampleSource.getNextAudioBlock(bufferToFill);
 
 }
 
-void DJAudioPlayer::releaseResources()
+void Player::releaseResources()
 {
     transportSource.releaseResources();
     resampleSource.releaseResources();
 }
 
-void DJAudioPlayer::loadURL(juce::URL audioURL)
+void Player::loadURL(juce::URL audioURL)
 {
     auto* reader = formatManager.createReaderFor(audioURL.createInputStream(juce::URL::InputStreamOptions(juce::URL::ParameterHandling::inAddress)));
     if (reader != nullptr) // good file!
@@ -43,11 +43,11 @@ void DJAudioPlayer::loadURL(juce::URL audioURL)
         throw UnsupportedFormatError{};
 }
 
-void DJAudioPlayer::setGain(double gain)
+void Player::setGain(double gain)
 {
     if (gain < 0 || gain > 1.0)
     {
-        std::cout << "DJAudioPlayer::setGain gain should be between 0 and 1" << std::endl;
+        std::cout << "Player::setGain gain should be between 0 and 1" << std::endl;
     }
     else
     {
@@ -55,27 +55,27 @@ void DJAudioPlayer::setGain(double gain)
     }
 }
 
-void DJAudioPlayer::setSpeed(double ratio)
+void Player::setSpeed(double ratio)
 {
   if (ratio < 0 || ratio > 100.0)
     {
-        std::cout << "DJAudioPlayer::setSpeed ratio should be between 0 and 100" << std::endl;
+        std::cout << "Player::setSpeed ratio should be between 0 and 100" << std::endl;
     }
     else {
         resampleSource.setResamplingRatio(ratio);
     }
 }
 
-void DJAudioPlayer::setPosition(double posInSecs)
+void Player::setPosition(double posInSecs)
 {
     transportSource.setPosition(posInSecs);
 }
 
-void DJAudioPlayer::setPositionRelative(double pos)
+void Player::setPositionRelative(double pos)
 {
      if (pos < 0 || pos > 1.0)
     {
-        std::cout << "DJAudioPlayer::setPositionRelative pos should be between 0 and 1" << std::endl;
+        std::cout << "Player::setPositionRelative pos should be between 0 and 1" << std::endl;
     }
     else {
         double posInSecs = transportSource.getLengthInSeconds() * pos;
@@ -83,38 +83,38 @@ void DJAudioPlayer::setPositionRelative(double pos)
     }
 }
 
-void DJAudioPlayer::start()
+void Player::start()
 {
     transportSource.start();
 }
 
-void DJAudioPlayer::stop()
+void Player::stop()
 {
     transportSource.stop();
 }
 
-double DJAudioPlayer::getPositionRelative() const
+double Player::getPositionRelative() const
 {
     return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
 }
 
-double DJAudioPlayer::getPositionAbsolute() const
+double Player::getPositionAbsolute() const
 {
     return transportSource.getCurrentPosition();
 }
 
-double DJAudioPlayer::getLengthInSeconds() const
+double Player::getLengthInSeconds() const
 {
     return transportSource.getLengthInSeconds();
 }
 
-bool DJAudioPlayer::isPlaying() const
+bool Player::isPlaying() const
 {
     return transportSource.isPlaying();
 }
 
 // implementing juce::ChangeListener
-void DJAudioPlayer::changeListenerCallback(juce::ChangeBroadcaster* source)
+void Player::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
     /**
      * If the playback status (playing/stopped) has changed, we need to notify the listeners,

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "DJAudioPlayer.h"
+#include "Player.h"
 #include "WaveformSlider.h"
 #include "PlayControlButton.h"
 #include "Fader.h"
@@ -54,7 +54,7 @@ public:
     */
     void loadFile(juce::File file);
 
-    DJAudioPlayer player;
+    Player player;
 
     bool toBeRemoved = false;
 

@@ -209,7 +209,7 @@ void Deck::loadFile(juce::File file)
     juce::URL url{file};
     try {
         player.loadURL(url);
-    } catch (DJAudioPlayer::UnsupportedFormatError e) {
+    } catch (Player::UnsupportedFormatError e) {
         juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::WarningIcon,
             "Unsupported file format",
             "The file you are trying to load is not supported by the application.",
