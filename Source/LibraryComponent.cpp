@@ -48,8 +48,19 @@ void LibraryComponent::paint (juce::Graphics& g)
 
 void LibraryComponent::resized()
 {
-    searchBox.setBounds(0, 0, getWidth(), 30);
-    tableComponent.setBounds(0, 30, getWidth(), getHeight() - 30);
+    using Track = juce::Grid::TrackInfo;
+    using Fr = juce::Grid::Fr;
+
+    juce::Grid grid;
+    grid.templateRows = { Track(), Track(Fr(1)) };
+    grid.templateColumns = { Track(Fr(1)) };
+
+    grid.items.addArray({
+        juce::GridItem(searchBox).withHeight(30).withArea(1, 1),
+        juce::GridItem(tableComponent).withArea(2, 1)
+    });
+
+    grid.performLayout(getLocalBounds());
 }
 
 int LibraryComponent::getNumRows()
