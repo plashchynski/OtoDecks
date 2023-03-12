@@ -38,15 +38,19 @@ jucer_project_files("OtoDecks/Assets"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
   .         .         x         "Assets/eject-button.png"
+  .         .         x         "Assets/mute.png"
   .         .         x         "Assets/pause-button.png"
   .         .         x         "Assets/play-button.png"
   .         .         x         "Assets/plus.png"
   .         .         x         "Assets/remove.png"
+  .         .         x         "Assets/unmute.png"
 )
 
 jucer_project_files("OtoDecks/Source"
 # Compile   Xcode     Binary    File
 #           Resource  Resource
+  x         .         .         "Source/MuteButton.cpp"
+  .         .         .         "Source/MuteButton.h"
   x         .         .         "Source/ControlButton.cpp"
   .         .         .         "Source/ControlButton.h"
   x         .         .         "Source/Fader.cpp"

@@ -8,6 +8,7 @@ MainComponent::MainComponent()
 
     addAndMakeVisible(addDeckButton);
     addAndMakeVisible(masterVolumeFader);
+    addAndMakeVisible(masterMuteButton);
 
     for (int i = 0; i < numDecks; i++)
         addDeck();
@@ -34,6 +35,7 @@ MainComponent::MainComponent()
     formatManager.registerBasicFormats();
 
     masterVolumeFader.addChangeListener(this);
+    masterMuteButton.addChangeListener(this);
 
     addDeckButton.addListener(this);
 }
@@ -89,9 +91,9 @@ void MainComponent::resized()
      * 
      * The layout of mixerControlsFb is:
      * 
-     * +-----+-------------------+
-     * | (+) | masterVolumeFader |
-     * +-----+-------------------+
+     * +-----+-------------------+------------------+
+     * | (+) | masterVolumeFader | masterMuteButton |
+     * +-----+-------------------+------------------+
      * 
      * 
      * The layout of mainFb is:
@@ -115,6 +117,7 @@ void MainComponent::resized()
     mixerControlsFb.flexDirection = juce::FlexBox::Direction::row;
     mixerControlsFb.items.add(juce::FlexItem(addDeckButton).withMargin(10).withMinWidth(50).withFlex(0, 0));
     mixerControlsFb.items.add(juce::FlexItem(masterVolumeFader).withMinWidth(150.0f).withFlex(0, 0));
+    mixerControlsFb.items.add(juce::FlexItem(masterMuteButton).withMargin(10).withMinWidth(50).withFlex(0, 0));
 
     juce::FlexBox mainFb;
     mainFb.flexDirection = juce::FlexBox::Direction::column;
@@ -151,6 +154,13 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
         Deck *deck = dynamic_cast<Deck *>(source);
         if (deck->toBeRemoved)
             removeDeck(deck);
+    }
+    else if (source == &masterMuteButton)
+    {
+        if (masterMuteButton.getStatus() == MuteButton::Status::Muted)
+            juce::SystemAudioVolume::setMuted(true);
+        else
+            juce::SystemAudioVolume::setMuted(false);
     }
 }
 

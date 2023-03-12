@@ -6,6 +6,7 @@
 #include "LibraryComponent.h"
 #include "Fader.h"
 #include "ControlButton.h"
+#include "MuteButton.h"
 
 class MainComponent :   public juce::AudioAppComponent,
                         public juce::DragAndDropContainer,
@@ -50,6 +51,7 @@ private:
     };
 
     Fader masterVolumeFader{"Master Volume", Fader::Type::Horizontal, "percent", 0, 1, 1};
+    MuteButton masterMuteButton;
 
     LibraryComponent libraryComponent{formatManager};
 

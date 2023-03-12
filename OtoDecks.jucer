@@ -6,13 +6,17 @@
     <GROUP id="{BF58413F-06AB-2432-4100-95DFC7C75E6E}" name="Assets">
       <FILE id="rwpp8d" name="eject-button.png" compile="0" resource="1"
             file="Assets/eject-button.png"/>
+      <FILE id="ULBBir" name="mute.png" compile="0" resource="1" file="Assets/mute.png"/>
       <FILE id="uqoUAn" name="pause-button.png" compile="0" resource="1"
             file="Assets/pause-button.png"/>
       <FILE id="KxMJrL" name="play-button.png" compile="0" resource="1" file="Assets/play-button.png"/>
       <FILE id="ntdOPf" name="plus.png" compile="0" resource="1" file="Assets/plus.png"/>
       <FILE id="LFKbbK" name="remove.png" compile="0" resource="1" file="Assets/remove.png"/>
+      <FILE id="CvKSLh" name="unmute.png" compile="0" resource="1" file="Assets/unmute.png"/>
     </GROUP>
     <GROUP id="{6FB17DBA-1BCF-64BB-8BA5-D8741FB27D13}" name="Source">
+      <FILE id="WPkftR" name="MuteButton.cpp" compile="1" resource="0" file="Source/MuteButton.cpp"/>
+      <FILE id="Kf8gXU" name="MuteButton.h" compile="0" resource="0" file="Source/MuteButton.h"/>
       <FILE id="B4D1w9" name="ControlButton.cpp" compile="1" resource="0"
             file="Source/ControlButton.cpp"/>
       <FILE id="iDHMCP" name="ControlButton.h" compile="0" resource="0" file="Source/ControlButton.h"/>
