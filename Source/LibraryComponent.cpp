@@ -5,6 +5,7 @@
 #include <JuceHeader.h>
 #include "LibraryComponent.h"
 #include "Formatter.h"
+#include "ControlButton.h"
 
 LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
                         formatManager(_formatManager)
@@ -12,8 +13,9 @@ LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
     tableComponent.getHeader().addColumn("Track", 1, 400);
     tableComponent.getHeader().addColumn("Artist", 2, 200);
     tableComponent.getHeader().addColumn("Duration", 3, 100);
-    tableComponent.getHeader().addColumn("", 4, 200);
+    tableComponent.getHeader().addColumn("", 4, 30);
     tableComponent.setModel(this);
+
 
     addAndMakeVisible(searchBox);
     addAndMakeVisible(tableComponent);
@@ -22,6 +24,7 @@ LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
     searchBox.addListener(this);
     addButton.addListener(this);
     searchBox.setTextToShowWhenEmpty("Search for a track or an artist...", juce::Colours::grey);
+
 
     updateDisplayedItems();
 }
@@ -262,4 +265,26 @@ void LibraryComponent::buttonClicked(juce::Button* button)
                 addFile(file.getFullPathName());
         });
     }
+}
+
+juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected,
+                                                juce::Component* existingComponentToUpdate)
+{
+    if (columnId == 4 && existingComponentToUpdate == nullptr)
+    {
+        juce::TextButton* deleteButton = new juce::TextButton{"X"};
+        deleteButton->setMouseCursor(juce::MouseCursor::PointingHandCursor);
+        deleteButton->setTooltip("Delete this item from the library");
+        deleteButton->onClick = [this, rowNumber]
+        {
+            library.removeChild(itemsToDisplay[rowNumber], nullptr);
+            itemsToDisplay.erase(itemsToDisplay.begin() + rowNumber);
+            tableComponent.updateContent();
+            saveLibrary();
+        };
+        deleteButton->addListener(this);
+        return deleteButton;
+    }
+
+    return existingComponentToUpdate;
 }
