@@ -4,10 +4,13 @@
 #include <vector>
 #include <string>
 
+#include "ControlButton.h"
+
 class LibraryComponent  :   public juce::Component,
                             public juce::TableListBoxModel,
                             public juce::FileDragAndDropTarget,
-                            public juce::TextEditor::Listener
+                            public juce::TextEditor::Listener,
+                            public juce::Button::Listener
 {
 public:
     LibraryComponent(juce::AudioFormatManager& formatManager);
@@ -53,6 +56,11 @@ public:
     */
     void loadLibrary();
 
+    /**
+     * virtual methods from Button::Listener
+    */
+    void buttonClicked(juce::Button* button) override;
+
 private:
     juce::AudioFormatManager& formatManager;
     juce::TableListBox tableComponent;
@@ -70,11 +78,16 @@ private:
      * Search box to filter the library items by title and artist
     */
     juce::TextEditor searchBox;
+
+    ControlButton addButton{juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize), "Add file to the library"};
+
     /**
      * Update the itemsToDisplay vector based on the search query
      * Should be called every time after the search query is changed or a new item is added to the library
     */
     void updateDisplayedItems();
+
+    juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LibraryComponent)
 };

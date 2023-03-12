@@ -90,8 +90,6 @@ void Deck::buttonClicked(juce::Button* button)
 {
     if (button == &loadButton)
     {
-        std::cout << formatManager.getWildcardForAllFormats() << std::endl;
-        auto fileChooserFlags = juce::FileBrowserComponent::canSelectFiles;
         fileChooser.launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& chooser)
         {
             if (chooser.getResult().existsAsFile())

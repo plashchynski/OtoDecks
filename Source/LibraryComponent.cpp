@@ -17,8 +17,10 @@ LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
 
     addAndMakeVisible(searchBox);
     addAndMakeVisible(tableComponent);
+    addAndMakeVisible(addButton);
 
     searchBox.addListener(this);
+    addButton.addListener(this);
     searchBox.setTextToShowWhenEmpty("Search for a track or an artist...", juce::Colours::grey);
 
     updateDisplayedItems();
@@ -53,11 +55,12 @@ void LibraryComponent::resized()
 
     juce::Grid grid;
     grid.templateRows = { Track(), Track(Fr(1)) };
-    grid.templateColumns = { Track(Fr(1)) };
+    grid.templateColumns = { Track(Fr(1)), Track() };
 
     grid.items.addArray({
         juce::GridItem(searchBox).withHeight(30).withArea(1, 1),
-        juce::GridItem(tableComponent).withArea(2, 1)
+        juce::GridItem(addButton).withSize(30, 30).withArea(1, 2),
+        juce::GridItem(tableComponent).withArea(2, 1, 2, 3)
     });
 
     grid.performLayout(getLocalBounds());
@@ -130,8 +133,6 @@ void LibraryComponent::filesDropped (const juce::StringArray& files, int x, int 
 */
 void LibraryComponent::addFile(const juce::String& filePath)
 {
-    std::cout << "Adding " << filePath << " to the library." << filePath << std::endl;
-
     juce::File audioFile(filePath);
 
     juce::ValueTree itemInfo("LibraryItem");
@@ -152,18 +153,26 @@ void LibraryComponent::addFile(const juce::String& filePath)
             itemInfo.setProperty("title", metadata["title"], nullptr);
             itemInfo.setProperty("artist", metadata["artist"], nullptr);
         }
+
+        library.appendChild(itemInfo, nullptr);
+
+        // Save the library to the file
+        saveLibrary();
+
+        // Update the itemsToDisplay vector based on the search query and with a new item
+        updateDisplayedItems();
+
+        // Update the table
+        tableComponent.updateContent();
     }
-
-    library.appendChild(itemInfo, nullptr);
-
-    // Save the library to the file
-    saveLibrary();
-
-    // Update the itemsToDisplay vector based on the search query and with a new item
-    updateDisplayedItems();
-
-    // Update the table
-    tableComponent.updateContent();
+    else
+    {
+        juce::AlertWindow::showMessageBoxAsync(juce::AlertWindow::AlertIconType::WarningIcon,
+            "Unsupported file format",
+            "The file you are trying to load is not supported by the application.",
+            "OK");
+        return;
+    }
 }
 
 // virtual methods from TextEditor::Listener
@@ -241,4 +250,16 @@ void LibraryComponent::loadLibrary()
 
     updateDisplayedItems();
     tableComponent.updateContent();
+}
+
+void LibraryComponent::buttonClicked(juce::Button* button)
+{
+    if (button == &addButton)
+    {
+        fileChooser.launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& chooser)
+        {
+            for (auto file : chooser.getResults())
+                addFile(file.getFullPathName());
+        });
+    }
 }
