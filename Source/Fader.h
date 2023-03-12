@@ -10,6 +10,7 @@ public:
     enum Type { Vertical, Horizontal };
 
     Fader(juce::String name, Type type, juce::String unit, double minValue, double maxValue, double defaultValue);
+    ~Fader();
 
     void paint(juce::Graphics&) override;
     void resized() override;
@@ -31,6 +32,16 @@ private:
     juce::Label label;
     juce::Label valueLabel;
     juce::Slider slider{juce::Slider::SliderStyle::LinearVertical, juce::Slider::TextEntryBoxPosition::NoTextBox};
+
+    class LookAndFeel : public juce::LookAndFeel_V3
+    {
+    public:
+        void drawLinearSliderThumb(juce::Graphics&, int x, int y, int width, int height,
+                                float sliderPos, float minSliderPos, float maxSliderPos,
+                                const juce::Slider::SliderStyle, juce::Slider&) override;
+    };
+
+    LookAndFeel lookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Fader)
 };

@@ -86,7 +86,7 @@ void LibraryComponent::paintRowBackground(juce::Graphics& g, int rowNumber,
     else if (rowNumber % 2)
         g.fillAll(juce::Colours::lightgrey);
     else
-        g.fillAll(juce::Colours::darkgrey);
+        g.fillAll(juce::Colours::grey);
 }
 
 // Check if the file is supported using AudioFormatManager to find the format by the file extension

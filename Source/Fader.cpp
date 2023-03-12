@@ -3,6 +3,8 @@
 Fader::Fader(juce::String name, Type _type, juce::String _unit, double _minValue, double _maxValue, double _defaultValue) :
     unit(_unit), minValue(_minValue), maxValue(_maxValue), defaultValue(_defaultValue), type(_type)
 {
+    slider.setLookAndFeel(&lookAndFeel);
+
     addAndMakeVisible(label);
     addAndMakeVisible(valueLabel);
     addAndMakeVisible(slider);
@@ -25,6 +27,11 @@ Fader::Fader(juce::String name, Type _type, juce::String _unit, double _minValue
     slider.addListener(this);
     slider.setRange(minValue, maxValue);
     slider.setValue(defaultValue);
+}
+
+Fader::~Fader()
+{
+    slider.setLookAndFeel(nullptr);
 }
 
 void Fader::paint(juce::Graphics& g)
@@ -52,8 +59,9 @@ void Fader::resized()
         auto area = getLocalBounds();
         auto labelArea = area.removeFromTop(20);
         label.setBounds(labelArea);
-        auto valueArea = area.removeFromTop(20);
+        auto valueArea = area.removeFromTop(25);
         valueLabel.setBounds(valueArea);
+        area.removeFromBottom(5);
         slider.setBounds(area);
     }
     else if (type == Type::Horizontal)
@@ -76,7 +84,7 @@ void Fader::resized()
         grid.items.addArray({
             juce::GridItem(label),
             juce::GridItem(valueLabel),
-            juce::GridItem(slider).withArea(2, 1, 2, 3)
+            juce::GridItem(slider).withArea(2, 1, 2, 3).withMargin(juce::GridItem::Margin(0, 5, 0, 5))
         });
 
         grid.performLayout(getLocalBounds());
@@ -106,3 +114,27 @@ void Fader::setValue(double value)
 {
     slider.setValue(value);
 }
+
+void Fader::LookAndFeel::drawLinearSliderThumb(juce::Graphics& g, int x, int y, int width, int height,
+                                            float sliderPos, float minSliderPos, float maxSliderPos,
+                                            const juce::Slider::SliderStyle style, juce::Slider& slider)
+{
+    auto knobColour = juce::Colour::fromRGBA(30, 128, 239, 150);
+
+    float kx, ky;
+
+    if (style == juce::Slider::LinearVertical)
+    {
+        kx = (float) x + (float) width * 0.5f;
+        ky = sliderPos;
+    }
+    else
+    {
+        kx = sliderPos;
+        ky = (float) y + (float) height * 0.5f;
+    }
+
+    g.setColour(knobColour);
+    g.fillRoundedRectangle(kx - 10, ky - 10, 20, 20, 5.0f);
+}
+

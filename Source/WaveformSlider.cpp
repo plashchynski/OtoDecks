@@ -12,8 +12,6 @@ WaveformSlider::WaveformSlider( juce::AudioFormatManager & 	formatManagerToUse,
     setRange(0.0, 1.0);
     setValue(0.0);
     audioThumb.addChangeListener(this);
-
-    
 }
 
 WaveformSlider::~WaveformSlider()
@@ -47,20 +45,19 @@ void WaveformSlider::LookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int
                                        const juce::Slider::SliderStyle style, juce::Slider& slider)
 {
     g.fillAll(findColour(juce::ResizableWindow::backgroundColourId));
-    g.setColour (juce::Colours::orange);
+    g.setColour (juce::Colours::lightblue);
 
-    if (fileLoaded)
-    {
-        juce::Rectangle<int> thumbArea(x, y, width, height);
-        audioThumb.drawChannel(g, thumbArea, 0.0, audioThumb.getTotalLength(), 0, 1.0f);
-
-        g.setColour(juce::Colours::lightgreen);
-        g.drawLine(sliderPos, y, sliderPos, y + height, 3.0f);
-        g.drawArrow(juce::Line<float>(sliderPos, y-5, sliderPos, y+15), 3.0f, 15.0f, 15.0f);
-    }
-    else
+    if (!fileLoaded)
     {
         g.setFont(20.0f);
         g.drawFittedText("No file loaded", x, y, width, height, juce::Justification::centred, 1);
+        return;
     }
+
+    juce::Rectangle<int> thumbArea(x, y, width, height);
+    audioThumb.drawChannel(g, thumbArea, 0.0, audioThumb.getTotalLength(), 0, 1.0f);
+
+    g.setColour(juce::Colour(30, 128, 239));
+    g.drawLine(sliderPos, y, sliderPos, y + height, 3.0f);
+    g.drawArrow(juce::Line<float>(sliderPos, y-5, sliderPos, y+15), 3.0f, 15.0f, 15.0f);
 }
