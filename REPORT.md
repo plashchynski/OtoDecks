@@ -59,20 +59,35 @@ The deck is implemented in the `Deck` class. Every deck has its own playing back
 
 ### R1C: can mix the tracks by varying each of their volumes
 
+The volume of each track can be controlled by the volume slider in the deck. The volume for each deck is set independently from 0% (muted) up to 100%. The "Master" volume slider controls the total volume of all tracks playing. Additionally, each deck has a "mute" button to mute the particular deck. Also, there's a master "mute" button to mute all tracks.
+
+[[Screenshot with volume sliders]
+
+The slider GUI and logic is implemented in the `Fader` class. The `Fader` class is a subclass of `juce::Slider` class.
+
 ### R1D: can speed up and slow down the tracks
 
+The speed of each track can be changed by the speed slider in the deck from 0% up to 300%. The 100% is a default playback speed. After some experimentation, I found that 300% is the maximum reasonable speed for the audio files. The playback speed of each deck is controlled independently.
 
+[[Screenshot with speed slider]]
+
+The speed slider is also implemented by the `Fader` class.
 
 ## R2: Custom deck control
 
-Implementation of a custom deck control Component with custom graphics which
-allows the user to control deck playback in some way that is more advanced than stop/ start.
-
 ### R2A: Component has custom graphics implemented in a paint function
+
+I've combined the waveform display with the position slider. So you can change the playback position by dragging the position "head" horizontally.
+
+[[Screenshot with waveform]]
+
+This custom control is implemented in the `WaveformSlider` class in `WaveformSlider.h` file. I've subclassed the regular `juce::Slider` with a custom `juce::LookAndFeel` instance attached that is the standard method to customize the appearance of the GUI components in JUCE. The `WaveformSlider::LookAndFeel::drawLinearSlider` is analog of the `juce::Component::paint` method, but aimed to customization of the standard components without fully reimplementing them. The `WaveformSlider::LookAndFeel::drawLinearSlider` method is drawing the waveform as a background and the positional "head" to indicate the current playback position and to change position by dragging it.
 
 ### R2B: Component enables the user to control the playback of a deck somehow
 
+It's allow to change the playback position by dragging the position "head" horizontally. It even allows to make a "scratching" effect by dragging the position "head" quickly.
 
+[[Screenshot with scratching]]
 
 ## R3: Music library component
 
@@ -105,26 +120,18 @@ This functionality is implemented in `LibraryComponent::saveLibrary` and `Librar
 
 ### R4A: GUI layout is significantly different from the basic Deck shown in class, with extra controls
 
-1. To ensure the app has enough space to display all the controls, I set the minimum size of the application window to `1024x768` pixels, but not less than the user's screen resolution. This is done by determining the screen size and then setting the minimum size for the `ComponentBoundsConstrainer` instance in the `MainWindow::MainWindow` method in `Main.cpp`:
-
-    ```c++
-        // Get the current screen size
-        juce::Rectangle<int> screenArea = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->userArea;
-
-        // Set minimum height and width for the window in pixels
-        const int minWidth = 1024;
-        const int minHeight = 768;
-
-        // Get the constrainer that determines the screen size limits
-        juce::ComponentBoundsConstrainer* constrainer = getConstrainer();
-
-        // The minimum size should not be less than the screen size
-        constrainer->setMinimumWidth(juce::jmin(minWidth, screenArea.getWidth()));
-        constrainer->setMinimumHeight(juce::jmin(minHeight, screenArea.getHeight()));
-    ```
+1. To ensure the app has enough space to display all the controls, I set the minimum size of the application window to `1024x768` pixels, but not less than the user's screen resolution. This is done by determining the screen size and then setting the minimum size for the `ComponentBoundsConstrainer` instance in the `MainWindow::MainWindow` method in `Main.cpp`.
 
 2. I've disabled a screen saver and a screen lock on Windows and macOS, which is a common practice for music applications. This is done by calling `juce::Desktop::getInstance().setScreenSaverEnabled(false)` in the `MainWindow::MainWindow` method in `Main.cpp`.
 
 ### R4B: GUI layout includes the custom Component from R2
 
+I use all available in JUCE layouting techniques: Grid, Flexbox, and absolute positioning, when appropriate. For one-dimensional layouting, I use Flexbox. For example, the `MainComponent` class uses Flexbox to layout the functional boxes: master controls, decks, and library. The `Deck` class uses Grid to layout  controls, and labels. In some trivial cases, I use absolute positioning. For example, the `Fader` class uses `getLocalBounds` and `removeFromTop` methods to position the slider and the labels.
+
+[[Screenshot with GUI layout annotations]]
+
 ### R4C: GUI layout includes the music library component fro R3
+
+The library is displayed in the bottom of the main window. The library uses a `juce::TableListBox` component to display the library items.
+
+[[Screenshot with library]]

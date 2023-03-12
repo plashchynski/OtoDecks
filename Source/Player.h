@@ -39,14 +39,14 @@ public:
 
     /**
      * get the absolute position of the playhead
-     * 
+     *
      * @return the position in seconds
     */
     double getPositionAbsolute() const;
 
     /**
      * get the length of the track
-     * 
+     *
      * @return the length in seconds
     */
     double getLengthInSeconds() const;

@@ -32,6 +32,9 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     waveformSlider.addListener(this);
     loadButton.addListener(this);
     removeButton.addListener(this);
+
+    durationLabel.setFont(juce::Font(20.0f, juce::Font::bold));
+    titleLabel.setFont(juce::Font(16.0f, juce::Font::plain));
 }
 
 Deck::~Deck()
@@ -57,7 +60,7 @@ void Deck::resized()
     juce::Grid grid;
 
     grid.templateRows = { Track(), Track(Fr(2)) };
-    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
+    grid.templateColumns = { Track(), Track(), Track(), Track(), Track(), Track(), Track(), Track(Fr(1)) };
 
     grid.items.addArray({
         /**
@@ -75,7 +78,6 @@ void Deck::resized()
         juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 5).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
         juce::GridItem(muteButton).withSize(32, 32).withArea(1, 6).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
         juce::GridItem(durationLabel).withWidth(50).withArea(1, 7),
-
         juce::GridItem(titleLabel).withArea(1, 8),
 
         juce::GridItem(waveformSlider).withArea(2, 4, 2, 9),

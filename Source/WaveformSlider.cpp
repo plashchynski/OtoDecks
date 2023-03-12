@@ -39,6 +39,7 @@ void WaveformSlider::changeListenerCallback (juce::ChangeBroadcaster *source)
     repaint();
 }
 
+// It's a like a paint() method for a Component
 void WaveformSlider::LookAndFeel::drawLinearSlider(juce::Graphics& g, int x, int y, int width, int height,
                                        float sliderPos,
                                        float minSliderPos,
