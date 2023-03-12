@@ -38,6 +38,8 @@ MainComponent::MainComponent()
     masterMuteButton.addChangeListener(this);
 
     addDeckButton.addListener(this);
+
+    masterMuteButton.setMuted(false);
 }
 
 MainComponent::~MainComponent()
@@ -157,10 +159,8 @@ void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
     }
     else if (source == &masterMuteButton)
     {
-        if (masterMuteButton.getStatus() == MuteButton::Status::Muted)
-            juce::SystemAudioVolume::setMuted(true);
-        else
-            juce::SystemAudioVolume::setMuted(false);
+        juce::SystemAudioVolume::setMuted(masterMuteButton.isMuted());
+        resized();
     }
 }
 

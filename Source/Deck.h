@@ -6,10 +6,8 @@
 #include "PlayControlButton.h"
 #include "Fader.h"
 #include "ControlButton.h"
+#include "MuteButton.h"
 
-//==============================================================================
-/*
-*/
 class Deck   :  public juce::Component,
                 public juce::Button::Listener,
                 public juce::Slider::Listener,
@@ -70,6 +68,8 @@ private:
         juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize),
         "Load a file to the deck"
     };
+
+    MuteButton muteButton;
 
     Fader volumeFader{"Volume", Fader::Type::Vertical, "percent", 0.0, 1.0, 1.0};
     Fader speedFader{"Speed", Fader::Type::Vertical, "percent", 0.0, 3.0, 1.0};

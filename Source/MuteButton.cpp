@@ -10,34 +10,24 @@ MuteButton::MuteButton()
 
 void MuteButton::buttonClicked(juce::Button *)
 {
-    if (getStatus() == Unmuted)
-        setStatus(Muted);
-    else
-        setStatus(Unmuted);
-    
+    setMuted(!isMuted());
+
     updateButtonImage();
     updateTooltip();
     sendChangeMessage();
 }
 
-void MuteButton::setStatus(const MuteButton::Status &newStatus)
+void MuteButton::setMuted(bool newStatus)
 {
     status = newStatus;
 }
 
 void MuteButton::updateButtonImage()
 {
-    switch(status)
-    {
-        case Muted:
-            setButtonImage(muteButtonImg);
-            break;
-        case Unmuted:
-            setButtonImage(unmuteButtonImg);
-            break;
-        default:
-            break;
-    }
+    if (isMuted())
+        setButtonImage(muteButtonImg);
+    else
+        setButtonImage(unmuteButtonImg);
 }
 
 void MuteButton::setButtonImage(const juce::Image& buttonImg)
@@ -46,20 +36,13 @@ void MuteButton::setButtonImage(const juce::Image& buttonImg)
                 buttonImg, 1.0f, juce::Colours::transparentBlack, // Normal
                 juce::Image(), 0.7f, juce::Colours::transparentBlack, // Over
                 juce::Image(), 0.4f, juce::Colours::transparentBlack); // Pressed
-    setBounds(getX(), getY(), buttonImg.getWidth()+15, buttonImg.getHeight()+15);
+    setBounds(getX(), getY(), buttonImg.getWidth(), buttonImg.getHeight());
 }
 
 void MuteButton::updateTooltip()
 {
-    switch(status)
-    {
-        case Muted:
-            setTooltip("Unmute");
-            break;
-        case Unmuted:
-            setTooltip("Mute");
-            break;
-        default:
-            break;
-    }
+    if (isMuted())
+        setTooltip("Unmute");
+    else
+        setTooltip("Mute");
 }

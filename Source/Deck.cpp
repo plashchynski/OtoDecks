@@ -15,6 +15,7 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     addAndMakeVisible(removeButton);
     addAndMakeVisible(loadButton);
     addAndMakeVisible(playControlButton);
+    addAndMakeVisible(muteButton);
     addAndMakeVisible(durationLabel);
 
     addAndMakeVisible(titleLabel);
@@ -24,7 +25,9 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     volumeFader.addChangeListener(this);
     speedFader.addChangeListener(this);
     playControlButton.addChangeListener(this);
+    muteButton.addChangeListener(this);
     player.addChangeListener(this);
+
 
     waveformSlider.addListener(this);
     loadButton.addListener(this);
@@ -58,11 +61,11 @@ void Deck::resized()
 
     grid.items.addArray({
         /**
-         * +-----+-----------------+-----------------+------------+-------------------+---------------+-------------+
-         * | (X) | volumeFader     | speedFader      | loadButton | playControlButton | durationLabel | titleLabel  |
-         * |     +                 +                 +------------+-------------------+---------------+-------------+
-         * |     |                 |                 | waveformSlider                                               |
-         * +-----+-----------------+-----------------+------------+-------------------------------------------------+
+         * +-----+-----------------+-----------------+------------+-------------------+------------+---------------+-------------+
+         * | (X) | volumeFader     | speedFader      | loadButton | playControlButton | muteButton | durationLabel | titleLabel  |
+         * |     +                 +                 +------------+-------------------+------------+---------------+-------------+
+         * |     |                 |                 | waveformSlider                                                            |
+         * +-----+-----------------+-----------------+---------------------------------------------------------------------------+
         */
         juce::GridItem(removeButton).withWidth(50).withArea(1, 1).withMargin(juce::GridItem::Margin(5, 10, 5, 10)),
         juce::GridItem(volumeFader).withWidth(50).withArea(1, 2, 4, 2),
@@ -70,11 +73,12 @@ void Deck::resized()
 
         juce::GridItem(loadButton).withSize(32, 32).withArea(1, 4).withMargin(juce::GridItem::Margin(5, 5, 5, 5)),
         juce::GridItem(playControlButton).withSize(32, 32).withArea(1, 5).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
-        juce::GridItem(durationLabel).withWidth(50).withArea(1, 6),
+        juce::GridItem(muteButton).withSize(32, 32).withArea(1, 6).withMargin(juce::GridItem::Margin(5, 5, 5, 0)),
+        juce::GridItem(durationLabel).withWidth(50).withArea(1, 7),
 
-        juce::GridItem(titleLabel).withArea(1, 7),
+        juce::GridItem(titleLabel).withArea(1, 8),
 
-        juce::GridItem(waveformSlider).withArea(2, 4, 2, 8),
+        juce::GridItem(waveformSlider).withArea(2, 4, 2, 9),
     });
 
     grid.performLayout(getLocalBounds());
@@ -198,6 +202,11 @@ void Deck::changeListenerCallback(juce::ChangeBroadcaster *source)
             stopTimer();
         }
         waveformSlider.setValue(player.getPositionRelative());
+    }
+
+    if (source == &muteButton)
+    {
+        muteButton.isMuted() ? player.setGain(0) : player.setGain(volumeFader.getValue());
     }
 }
 

@@ -13,12 +13,12 @@ public:
     void buttonClicked(juce::Button *) override;
 
     enum Status { Muted, Unmuted };
-    
-    void setStatus(const MuteButton::Status &newStatus);
-    Status getStatus() const { return status; }
+
+    void setMuted(bool newStatus);
+    bool isMuted() const { return status; }
 
 private:
-    Status status = Unmuted;
+    bool status = false;
 
     juce::Image muteButtonImg = juce::ImageCache::getFromMemory(BinaryData::mute_png, BinaryData::mute_pngSize);
     juce::Image unmuteButtonImg = juce::ImageCache::getFromMemory(BinaryData::unmute_png, BinaryData::unmute_pngSize);
