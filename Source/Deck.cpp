@@ -10,6 +10,7 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
             formatManager(_formatManager),
             waveformSlider(_formatManager, cacheToUse)
 {
+    // add all child components to display
     addAndMakeVisible(volumeFader);
     addAndMakeVisible(speedFader);
     addAndMakeVisible(removeButton);
@@ -20,6 +21,7 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     addAndMakeVisible(titleLabel);
     addAndMakeVisible(waveformSlider);
 
+    // listen to the events from the child components
     volumeFader.addChangeListener(this);
     speedFader.addChangeListener(this);
     playControlButton.addChangeListener(this);
@@ -30,12 +32,14 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     loadButton.addListener(this);
     removeButton.addListener(this);
 
+    // set the appearance of the child components
     durationLabel.setFont(juce::Font(20.0f, juce::Font::bold));
     titleLabel.setFont(juce::Font(16.0f, juce::Font::plain));
 }
 
 Deck::~Deck()
 {
+    // release the resources used by the deck before it is destroyed
     player.releaseResources();
     stopTimer();
 }
@@ -49,6 +53,8 @@ void Deck::paint (juce::Graphics& g)
 
 void Deck::resized()
 {
+    // layout the child components using juce::Grid
+
     using Track = juce::Grid::TrackInfo;
     using Fr = juce::Grid::Fr;
 
@@ -83,8 +89,10 @@ void Deck::resized()
 
 void Deck::buttonClicked(juce::Button* button)
 {
+    // handle button clicks
     if (button == &loadButton)
     {
+        // open a file chooser to select a file to load
         fileChooser.launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& chooser)
         {
             if (chooser.getResult().existsAsFile())
@@ -93,20 +101,24 @@ void Deck::buttonClicked(juce::Button* button)
     }
     else if (button == &removeButton)
     {
+        // prepare the deck to be removed
         player.stop();
         toBeRemoved = true;
+        // signal the parent component that the deck is to be removed
         sendChangeMessage();
     }
 }
 
 void Deck::sliderValueChanged (juce::Slider *slider)
 {
+    // intercommunicate the waveform slider and the player
     if (slider == &waveformSlider)
         player.setPositionRelative(slider->getValue());
 }
 
 void Deck::timerCallback()
 {
+    // periodically update the information about the playback
     if (player.isPlaying()) {
         waveformSlider.setValue(player.getPositionRelative());
         durationLabel.setText(Formatter::formatTime(player.getLengthInSeconds() - player.getPositionAbsolute()), juce::dontSendNotification);
@@ -153,6 +165,10 @@ bool Deck::isInterestedInDragSource(const SourceDetails& dragSourceDetails)
     return false;
 }
 
+/** implement juce::TextDragAndDropTarget
+ *
+ * it is used to load a file from the library
+*/
 void Deck::itemDropped(const SourceDetails& dragSourceDetails)
 {
     juce::ValueTree draggedItemInfo = juce::ValueTree::fromXml(dragSourceDetails.description.toString());
@@ -162,19 +178,23 @@ void Deck::itemDropped(const SourceDetails& dragSourceDetails)
     loadFile(file);
 }
 
+// implement juce::ChangeListener to receive notifications from the child components
 void Deck::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
+    // Change volume (gain)
     if (source == &volumeFader)
     {
         player.setGain(volumeFader.getValue());
     }
 
-    if (source == &speedFader)
+    // Change speed
+    else if (source == &speedFader)
     {
         player.setSpeed(speedFader.getValue());
     }
 
-    if (source == &playControlButton)
+    // play/pause the player
+    else if (source == &playControlButton)
     {
         if (playControlButton.getStatus() == PlayControlButton::Status::PlayRequested)
             player.start();
@@ -182,7 +202,8 @@ void Deck::changeListenerCallback(juce::ChangeBroadcaster *source)
             player.stop();
     }
 
-    if (source == &player)
+    // update the play/pause button and the waveform slider when the player changes state
+    else if (source == &player)
     {
         if (player.isPlaying())
         {
@@ -197,18 +218,24 @@ void Deck::changeListenerCallback(juce::ChangeBroadcaster *source)
         waveformSlider.setValue(player.getPositionRelative());
     }
 
-    if (source == &muteButton)
+    // Mute the deck
+    else if (source == &muteButton)
     {
         muteButton.isMuted() ? player.setGain(0) : player.setGain(volumeFader.getValue());
     }
 }
 
+/**
+ * One point of entry for loading a file into the deck
+*/
 void Deck::loadFile(juce::File file)
 {
     if (!file.existsAsFile())
         return;
 
     juce::URL url{file};
+
+    // Here we are using player to check if the file format is supported:
     try {
         player.loadURL(url);
     } catch (Player::UnsupportedFormatError e) {
@@ -230,5 +257,7 @@ void Deck::loadFile(juce::File file)
     durationLabel.setText(Formatter::formatTime(player.getLengthInSeconds()), juce::dontSendNotification);
 
     waveformSlider.loadURL(url);
+
+    // It's paused by default
     playControlButton.setStatus(PlayControlButton::Status::Paused);
 }

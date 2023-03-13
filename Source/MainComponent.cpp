@@ -6,10 +6,12 @@ MainComponent::MainComponent()
 {
     setSize (800, 600);
 
+    // add all child components to display
     addAndMakeVisible(addDeckButton);
     addAndMakeVisible(masterVolumeFader);
     addAndMakeVisible(masterMuteButton);
 
+    // Add a default number of decks
     for (int i = 0; i < numDecks; i++)
         addDeck();
 
@@ -30,15 +32,18 @@ MainComponent::MainComponent()
     addAndMakeVisible(tooltipWindow);
     addAndMakeVisible(libraryComponent);
 
+    // load the library from a file
     libraryComponent.loadLibrary();
 
     formatManager.registerBasicFormats();
 
+    // listen to the events from the child components
     masterVolumeFader.addChangeListener(this);
     masterMuteButton.addChangeListener(this);
 
     addDeckButton.addListener(this);
 
+    // It's unmuted by default
     masterMuteButton.setMuted(false);
 }
 
@@ -48,6 +53,7 @@ MainComponent::~MainComponent()
     shutdownAudio();
 }
 
+// prepare the playing backend to play on all the decks
 void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     for (auto deck : decks)
@@ -90,6 +96,7 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::resized()
 {
     /**
+     * Using FlexBox to layout the components
      *
      * The layout of mixerControlsFb is:
      *
@@ -133,6 +140,7 @@ void MainComponent::resized()
     mainFb.performLayout(getLocalBounds().toFloat());
 }
 
+// add a new deck
 void MainComponent::addDeck()
 {
     Deck *deck = new Deck(formatManager, thumbCache);
@@ -146,6 +154,18 @@ void MainComponent::addDeck()
     resized();
 }
 
+// remove a specific deck
+void MainComponent::removeDeck(Deck *deck)
+{
+    // Remove the deck
+    removeChildComponent(deck);
+    mixerSource.removeInputSource(&deck->player);
+    decks.removeObject(deck);
+
+    resized();
+}
+
+// receive events from the child components
 void MainComponent::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
     if (source == &masterVolumeFader)
@@ -168,14 +188,4 @@ void MainComponent::buttonClicked(juce::Button *button)
 {
     if (button == &addDeckButton)
         addDeck();
-}
-
-void MainComponent::removeDeck(Deck *deck)
-{
-    // Remove the deck
-    removeChildComponent(deck);
-    mixerSource.removeInputSource(&deck->player);
-    decks.removeObject(deck);
-
-    resized();
 }

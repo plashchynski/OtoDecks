@@ -10,22 +10,26 @@
 LibraryComponent::LibraryComponent(juce::AudioFormatManager& _formatManager) :
                         formatManager(_formatManager)
 {
+    // Configure the table columns
     tableComponent.getHeader().addColumn("Track", 1, 400);
     tableComponent.getHeader().addColumn("Artist", 2, 200);
     tableComponent.getHeader().addColumn("Duration", 3, 100);
     tableComponent.getHeader().addColumn("", 4, 30);
     tableComponent.setModel(this);
 
-
+    // add all child components to display
     addAndMakeVisible(searchBox);
     addAndMakeVisible(tableComponent);
     addAndMakeVisible(addButton);
 
+    // Listen to the events from the child components
     searchBox.addListener(this);
     addButton.addListener(this);
+
+    // set the appearance of the child components
     searchBox.setTextToShowWhenEmpty("Search for a track or an artist...", juce::Colours::grey);
 
-
+    // update an array of items to be displayed in the table
     updateDisplayedItems();
 }
 
@@ -53,6 +57,8 @@ void LibraryComponent::paint (juce::Graphics& g)
 
 void LibraryComponent::resized()
 {
+    // layout the child components using juce::Grid
+
     using Track = juce::Grid::TrackInfo;
     using Fr = juce::Grid::Fr;
 
@@ -138,6 +144,7 @@ void LibraryComponent::addFile(const juce::String& filePath)
 {
     juce::File audioFile(filePath);
 
+    // Create a ValueTree to store the meta-information about the library item
     juce::ValueTree itemInfo("LibraryItem");
     itemInfo.setProperty("filePath", filePath, nullptr);
     itemInfo.setProperty("title", audioFile.getFileNameWithoutExtension(), nullptr);
@@ -215,11 +222,13 @@ void LibraryComponent::updateDisplayedItems()
     }
 }
 
+// This method used to make a library item draggable
 juce::var LibraryComponent::getDragSourceDescription(const juce::SparseSet<int>& currentlySelectedRows)
 {
     return itemsToDisplay[currentlySelectedRows[0]].toXmlString();
 }
 
+// Save the library from ValueTree to the file
 void LibraryComponent::saveLibrary()
 {
     juce::File file{juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("OtoDecksLibrary.otdl")};
@@ -240,6 +249,7 @@ void LibraryComponent::saveLibrary()
     output.flush();
 }
 
+// Load the library from the file to the ValueTree
 void LibraryComponent::loadLibrary()
 {
     juce::File file{juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("OtoDecksLibrary.otdl")};
@@ -257,6 +267,7 @@ void LibraryComponent::loadLibrary()
 
 void LibraryComponent::buttonClicked(juce::Button* button)
 {
+    // Add a new file to the library
     if (button == &addButton)
     {
         fileChooser.launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& chooser)
@@ -267,9 +278,11 @@ void LibraryComponent::buttonClicked(juce::Button* button)
     }
 }
 
+// This method is used to display custom components in the table
 juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected,
                                                 juce::Component* existingComponentToUpdate)
 {
+    // Display the delete button
     if (columnId == 4 && existingComponentToUpdate == nullptr)
     {
         juce::TextButton* deleteButton = new juce::TextButton{"X"};
@@ -277,6 +290,7 @@ juce::Component* LibraryComponent::refreshComponentForCell(int rowNumber, int co
         deleteButton->setTooltip("Delete this item from the library");
         deleteButton->onClick = [this, rowNumber]
         {
+            // a lambda function to delete the item from the library:
             library.removeChild(itemsToDisplay[rowNumber], nullptr);
             itemsToDisplay.erase(itemsToDisplay.begin() + rowNumber);
             tableComponent.updateContent();

@@ -32,6 +32,8 @@ void MuteButton::updateButtonImage()
 
 void MuteButton::setButtonImage(const juce::Image& buttonImg)
 {
+    // The idea is to have different opacity for the button images
+    // when the button is in different states
     setImages(true, false, true,
                 buttonImg, 1.0f, juce::Colours::transparentBlack, // Normal
                 juce::Image(), 0.7f, juce::Colours::transparentBlack, // Over
@@ -39,6 +41,7 @@ void MuteButton::setButtonImage(const juce::Image& buttonImg)
     setBounds(getX(), getY(), buttonImg.getWidth(), buttonImg.getHeight());
 }
 
+// tooltip is a text that appears when the mouse hovers over the button
 void MuteButton::updateTooltip()
 {
     if (isMuted())
