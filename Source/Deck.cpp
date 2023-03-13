@@ -17,9 +17,7 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     addAndMakeVisible(playControlButton);
     addAndMakeVisible(muteButton);
     addAndMakeVisible(durationLabel);
-
     addAndMakeVisible(titleLabel);
-
     addAndMakeVisible(waveformSlider);
 
     volumeFader.addChangeListener(this);
@@ -27,7 +25,6 @@ Deck::Deck( juce::AudioFormatManager& _formatManager,
     playControlButton.addChangeListener(this);
     muteButton.addChangeListener(this);
     player.addChangeListener(this);
-
 
     waveformSlider.addListener(this);
     loadButton.addListener(this);
@@ -46,14 +43,12 @@ Deck::~Deck()
 void Deck::paint (juce::Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));   // clear the background
-
     g.setColour (juce::Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 }
 
 void Deck::resized()
 {
-
     using Track = juce::Grid::TrackInfo;
     using Fr = juce::Grid::Fr;
 
@@ -107,9 +102,7 @@ void Deck::buttonClicked(juce::Button* button)
 void Deck::sliderValueChanged (juce::Slider *slider)
 {
     if (slider == &waveformSlider)
-    {
         player.setPositionRelative(slider->getValue());
-    }
 }
 
 void Deck::timerCallback()

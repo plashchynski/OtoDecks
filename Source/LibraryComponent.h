@@ -1,8 +1,11 @@
+/**
+ * This class represents a library — a component that displays a list of audio files (items) and
+ * allows the user to add new files, search for files, and drag and drop files to the decks
+*/
 #pragma once
 
 #include <JuceHeader.h>
 #include <vector>
-#include <string>
 
 #include "ControlButton.h"
 
@@ -13,13 +16,19 @@ class LibraryComponent  :   public juce::Component,
                             public juce::Button::Listener
 {
 public:
+    /**
+     * Constructor
+     *
+     * @param formatManager a reference to a global format manager
+    */
     LibraryComponent(juce::AudioFormatManager& formatManager);
     ~LibraryComponent() override;
 
+    // juce::Component overrides
     void paint (juce::Graphics&) override;
     void resized() override;
 
-    // virtual methods from TableListBoxModel
+    // implementing juce::TableListBoxModel
     int getNumRows() override;
     void paintRowBackground(juce::Graphics& g, int rowNumber,
                             int width, int height, bool rowIsSelected) override;
@@ -29,24 +38,21 @@ public:
     juce::Component* refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected,
                                                 juce::Component* existingComponentToUpdate) override;
 
-    // virtual methods from FileDragAndDropTarget
+    // implementing juce::FileDragAndDropTarget
     bool isInterestedInFileDrag (const juce::StringArray& files) override;
     void filesDropped (const juce::StringArray& files, int x, int y) override;
 
-    // virtual methods from TextEditor::Listener
+    // implementing juce::TextEditor::Listener
     void textEditorTextChanged(juce::TextEditor & editor) override;
+
+    // implementing juce::Button::Listener
+    void buttonClicked(juce::Button* button) override;
 
     /**
      * Add a file to the library
      * @param filePath path to the file
     */
     void addFile(const juce::String& filePath);
-
-    /**
-     * Search items in the library by title and artist and display only the matching items
-     * @param query query to filter the library
-    */
-    // std::vector<LibraryItem> searchLibrary(const juce::String & query);
 
     /**
      * Save the library to a file
@@ -58,13 +64,11 @@ public:
     */
     void loadLibrary();
 
-    /**
-     * virtual methods from Button::Listener
-    */
-    void buttonClicked(juce::Button* button) override;
-
 private:
+    // A reference to a global format manager
     juce::AudioFormatManager& formatManager;
+
+    // A table component to display the library items
     juce::TableListBox tableComponent;
 
     // This is a value tree that will be used to store the library data
@@ -81,6 +85,7 @@ private:
     */
     juce::TextEditor searchBox;
 
+    // A button to add a file to the library
     ControlButton addButton{juce::ImageCache::getFromMemory(BinaryData::plus_png, BinaryData::plus_pngSize), "Add file to the library"};
 
     /**
@@ -89,6 +94,7 @@ private:
     */
     void updateDisplayedItems();
 
+    //  A file chooser to select a file to add to the library
     juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LibraryComponent)

@@ -1,3 +1,6 @@
+/**
+ * This class represents a set of controls for one playing unit.
+*/
 #pragma once
 
 #include <JuceHeader.h>
@@ -13,12 +16,17 @@ class Deck   :  public juce::Component,
                 public juce::Slider::Listener,
                 public juce::FileDragAndDropTarget,
                 public juce::DragAndDropTarget,
-                public juce::TextEditor::Listener,
                 public juce::Timer,
                 public juce::ChangeListener,
                 public juce::ChangeBroadcaster
 {
 public:
+    /**
+     * Constructor.
+     *
+     * @param _formatManager A reference to a global format manager.
+     * @param cacheToUse A reference to a global thumbnail cache.
+     * */
     Deck(juce::AudioFormatManager& _formatManager,
             juce::AudioThumbnailCache& cacheToUse);
     ~Deck();
@@ -32,7 +40,7 @@ public:
     /** implement juce::Slider::Listener */
     void sliderValueChanged(juce::Slider *slider) override;
 
-    /** implement juce::FileDragAndDropTarget */ 
+    /** implement juce::FileDragAndDropTarget */
     bool isInterestedInFileDrag(const juce::StringArray &files) override;
     void filesDropped(const juce::StringArray &files, int x, int y) override;
 
@@ -48,38 +56,57 @@ public:
 
     /**
      * Load a file into the deck
+     *
      * @param file the file to load
     */
     void loadFile(juce::File file);
 
+    /**
+     * This is the playing backend for the deck.
+     * It is public because it is used in the main component to control the playback.
+    */
     Player player;
 
+    /**
+     * This is a flag to indicate that the deck should be removed.
+     * It is used by the main component to remove the deck from the screen.
+     */
     bool toBeRemoved = false;
 
 private:
-    PlayControlButton playControlButton;
-
+    // Button to remove the deck from the screen
     ControlButton removeButton{
         juce::ImageCache::getFromMemory(BinaryData::remove_png, BinaryData::remove_pngSize),
         "Remove the deck"
     };
 
+    // Button to load a file into the deck
     ControlButton loadButton{
         juce::ImageCache::getFromMemory(BinaryData::ejectbutton_png, BinaryData::ejectbutton_pngSize),
         "Load a file to the deck"
     };
 
+    // Button to start/pause the playback
+    PlayControlButton playControlButton;
+
+    // Button to mute the deck
     MuteButton muteButton;
 
+    // Faders (sliders) to control the volume and playback speed
     Fader volumeFader{"Volume", Fader::Type::Vertical, "percent", 0.0, 1.0, 1.0};
     Fader speedFader{"Speed", Fader::Type::Vertical, "percent", 0.0, 3.0, 1.0};
 
-    juce::Label titleLabel;
+    // Labels to display meta-infomation about the loaded track
     juce::Label durationLabel;
+    juce::Label titleLabel;
 
+    // A waveform display that combined with a position slider
     WaveformSlider waveformSlider;
 
+    // A reference to a global format manager
     juce::AudioFormatManager& formatManager;
+
+    // an instance represents a dialog to select a file
     juce::FileChooser fileChooser{"Select a file...", juce::File(), formatManager.getWildcardForAllFormats()};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Deck)

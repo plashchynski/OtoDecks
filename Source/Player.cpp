@@ -119,7 +119,7 @@ void Player::changeListenerCallback(juce::ChangeBroadcaster* source)
     /**
      * If the playback status (playing/stopped) has changed, we need to notify the listeners,
      * to propagate the change to the listeners to update the GUI.
-     * */ 
+     * */
     if (source == &transportSource)
     {
         sendChangeMessage();

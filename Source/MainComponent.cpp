@@ -90,14 +90,14 @@ void MainComponent::paint (juce::Graphics& g)
 void MainComponent::resized()
 {
     /**
-     * 
+     *
      * The layout of mixerControlsFb is:
-     * 
+     *
      * +-----+-------------------+------------------+
      * | (+) | masterVolumeFader | masterMuteButton |
      * +-----+-------------------+------------------+
-     * 
-     * 
+     *
+     *
      * The layout of mainFb is:
      *
      * +-------------------+
@@ -111,8 +111,8 @@ void MainComponent::resized()
      * |                   |
      * |                   |
      * +-------------------+
-     * 
-     * 
+     *
+     *
     */
 
     juce::FlexBox mixerControlsFb;
